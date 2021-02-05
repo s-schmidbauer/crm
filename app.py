@@ -185,5 +185,5 @@ def invoices():
     output = []
 
     for invoice in invoices.find():
-      output.append({ "number": invoice['number'], "customer": invoice['customer'], "time_registrations": invoice['time_registrations'], "spendings": invoice['spendings'] })
+      output.append({ "number": invoice['number'] })
     return jsonify({'invoices' : output })
