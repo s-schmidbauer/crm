@@ -3,14 +3,14 @@ from marshmallow.validate import Length
 
 class CurrencySchema(Schema):
   symbol = fields.String(required=True, validate=Length(min=1, max=3))
-  usd_conversion_rate = fields.Float(required=True, validate=Length(min=3, max=3))
+  usd_conversion_rate = fields.Float(required=True)
 
   # def get_usd_conversion_rate(self, obj):
   #     return 0.9
 
 class RateSchema(Schema):
   name = fields.String(required=True, validate=Length(min=1, max=20))
-  price = fields.Float(required=True, validate=Length(min=2, max=5))
+  price = fields.Float(required=True)
   # currency = fields.Nested(CurrencySchema)
 
 class TimeRegistrationSchema(Schema):
