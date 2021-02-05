@@ -153,35 +153,56 @@ def add_invoice():
 # List Views
 @app.route("/currencies")
 def currencies():
-    currencies = mongo.db.currencies.find()
-    return {"currencies": currencies_schema.dump(currencies)}
+    try:
+      currencies = mongo.db.currencies.find()
+      return {"currencies": currencies_schema.dump(currencies)}
+    except Error:
+      return {"message": "An error occured"}
 
 @app.route("/rates")
 def rates():
-    rates = mongo.db.rates.find()
-    return {"rates": rates_schema.dump(rates)}
+    try:
+      rates = mongo.db.rates.find()
+      return {"rates": rates_schema.dump(rates)}
+    except Error:
+      return {"message": "An error occured"}
 
 @app.route("/time_registrations")
 def time_registrations():
-    timeregistrations = mongo.db.timeregistrations.find()
-    return {"time_registrations": timeregs_schema.dump(timeregistrations)}
+    try:
+      timeregistrations = mongo.db.timeregistrations.find()
+      return {"time_registrations": timeregs_schema.dump(timeregistrations)}
+    except Error:
+      return {"message": "An error occured"}
 
 @app.route("/payment_methods")
 def payment_methods():
-    paymentmethods = mongo.db.paymentmethods.find()
-    return {"payment_methods": payments_schema.dump(paymentmethods)}
+    try:
+      paymentmethods = mongo.db.paymentmethods.find()
+      return {"payment_methods": payments_schema.dump(paymentmethods)}
+    except Error:
+      return {"message": "An error occured"}
 
 @app.route("/spendings")
 def spendings():
-    spendings = mongo.db.spendings.find()
-    return {"spendings": spendings_schema.dump(spendings)}
+    try:
+      spendings = mongo.db.spendings.find()
+      return {"spendings": spendings_schema.dump(spendings)}
+    except Error:
+      return {"message": "An error occured"}
 
 @app.route("/contacts")
 def contacts():
-    contacts = mongo.db.contacts.find()
-    return {"contacts": contacts_schema.dump(contacts)}
+    try:
+      contacts = mongo.db.contacts.find()
+      return {"contacts": contacts_schema.dump(contacts)}
+    except Error:
+      return {"message": "An error occured"}
 
 @app.route("/invoices")
 def invoices():
-    invoices = mongo.db.invoices.find()
-    return {"invoices": invoices_schema.dump(invoices)}
+    try:
+      invoices = mongo.db.invoices.find()
+      return {"invoices": invoices_schema.dump(invoices)}
+    except Error:
+      return {"message": "An error occured"}
