@@ -14,11 +14,17 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 mongo = PyMongo(app)
 
 from schemas import currency_schema, \
+                    currencies_schema, \
                     rate_schema, \
+                    rates_schema, \
                     timereg_schema, \
+                    timeregs_schema, \
                     payment_schema, \
+                    payments_schema, \
                     spending_schema, \
+                    spendings_schema, \
                     contact_schema, \
+                    contacts_schema, \
                     invoice_schema, \
                     invoices_schema
 
@@ -65,7 +71,7 @@ def add_currency():
     cs = currency_schema.dump(eur)
     currencies = mongo.db.currencies
     currencies.insert(cs)
-    return eur
+    return currency_schema.dump(eur)
 
 @app.route("/add_time_registration")
 def add_time_registration():
@@ -74,7 +80,7 @@ def add_time_registration():
     tr = timereg_schema.dump(kw_5)
     timeregistrations = mongo.db.timeregistrations
     timeregistrations.insert(tr)
-    return kw_5
+    return timereg_schema.dump(kw_5)
 
 @app.route("/add_rate")
 def add_rate():
@@ -82,7 +88,7 @@ def add_rate():
     rs = rate_schema.dump(sentia_normal)
     rates = mongo.db.rates
     rates.insert(rs)
-    return sentia_normal
+    return rate_schema.dump(sentia_normal)
 
 @app.route("/add_payment_method")
 def add_payment_method():
@@ -90,7 +96,7 @@ def add_payment_method():
     ps = payment_schema.dump(visa)
     paymentmethods = mongo.db.paymentmethods
     paymentmethods.insert(ps)
-    return visa
+    return payment_schema.dump(visa)
 
 @app.route("/add_contact")
 def add_contact():
@@ -98,7 +104,7 @@ def add_contact():
     cs = contact_schema.dump(sentia)
     contacts = mongo.db.contacts
     contacts.insert(cs)
-    return sentia
+    return contact_schema.dump(sentia)
 
 @app.route("/add_spending")
 def add_spending():
@@ -107,7 +113,7 @@ def add_spending():
     ss = spending_schema.dump(spending)
     spendings = mongo.db.spendings
     spendings.insert(ss)
-    return spending
+    return spending_schema.dump(spending)
 
 @app.route("/add_invoice")
 def add_invoice():
@@ -122,68 +128,40 @@ def add_invoice():
     inv = invoice_schema.dump(invoice)
     invoices = mongo.db.invoices
     invoices.insert(inv)
-    return invoice
+    return invoice_schema.dump(invoice)
 
 # List Views
 @app.route("/currencies")
 def currencies():
-    currencies = mongo.db.currencies
-    output = []
-
-    for currency in currencies.find():
-      output.append({ "symbol": currency['symbol'], "usd_conversion_rate": currency['usd_conversion_rate']})
-    return jsonify({'currencies' : output })
+    currencies = mongo.db.currencies.find()
+    return {"currencies": currencies_schema.dump(currencies)}
 
 @app.route("/rates")
 def rates():
-    rates = mongo.db.rates
-    output = []
-
-    for rate in rates.find():
-      output.append({ "name": rate['name'], "price": rate['price']})
-    return jsonify({'rates' : output })
+    rates = mongo.db.rates.find()
+    return {"rates": rates_schema.dump(rates)}
 
 @app.route("/time_registrations")
 def time_registrations():
-    timeregistrations = mongo.db.timeregistrations
-    output = []
-
-    for timeregistration in timeregistrations.find():
-      output.append({ "start_date": timeregistration['start_date'], "end_date": timeregistration['end_date']})
-    return jsonify({'time_registrations' : output })
+    timeregistrations = mongo.db.timeregistrations.find()
+    return {"time_registrations": timeregs_schema.dump(timeregistrations)}
 
 @app.route("/payment_methods")
 def payment_methods():
-    paymentmethods = mongo.db.paymentmethods
-    output = []
-
-    for paymentmethod in paymentmethods.find():
-      output.append({ "name": paymentmethod['name']})
-    return jsonify({'payment_methods' : output })
+    paymentmethods = mongo.db.paymentmethods.find()
+    return {"payment_methods": payments_schema.dump(paymentmethods)}
 
 @app.route("/spendings")
 def spendings():
-    spendings = mongo.db.spendings
-    output = []
-
-    for spending in spendings.find():
-      output.append({ "name": spending['name'], "amount": spending['amount'] })
-    return jsonify({'spendings' : output })
+    spendings = mongo.db.spendings.find()
+    return {"spendings": spendings_schema.dump(spendings)}
 
 @app.route("/contacts")
 def contacts():
-    contacts = mongo.db.contacts
-    output = []
-
-    for contact in contacts.find():
-      output.append({ "name": contact['name']})
-    return jsonify({'contacts' : output })
+    contacts = mongo.db.contacts.find()
+    return {"contacts": contacts_schema.dump(contacts)}
 
 @app.route("/invoices")
 def invoices():
-    invoices = mongo.db.invoices
-    output = []
-
-    for invoice in invoices.find():
-      output.append({ "number": invoice['number'] })
-    return jsonify({'invoices' : output })
+    invoices = mongo.db.invoices.find()
+    return {"invoices": invoices_schema.dump(invoices)}

@@ -70,10 +70,16 @@ class TimeRegistrationSchema(Schema):
 
 # Schemas used by Marshmallow
 currency_schema = CurrencySchema()
+currencies_schema = CurrencySchema(many=True)
 rate_schema = RateSchema()
+rates_schema = RateSchema(many=True)
 timereg_schema = TimeRegistrationSchema()
+timeregs_schema = TimeRegistrationSchema(many=True)
 payment_schema = PaymentMethodSchema()
+payments_schema = PaymentMethodSchema(many=True)
 spending_schema = SpendingSchema()
+spendings_schema = SpendingSchema(many=True)
 contact_schema = ContactSchema()
+contacts_schema = ContactSchema(many=True)
 invoice_schema = InvoiceSchema()
 invoices_schema = InvoiceSchema(many=True)
