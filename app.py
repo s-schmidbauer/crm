@@ -8,88 +8,55 @@ from pprint import pprint
 
 app = Flask(__name__)
 app.secret_key = 'supersecretstuff'
-# app.config['MONGO_DBNAME'] = 'crm'
 app.config['MONGO_URI'] = 'mongodb+srv://stefan:supersecret@cluster0.n7jgd.mongodb.net/crm?retryWrites=true&w=majority'
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 mongo = PyMongo(app)
 
-class CurrencySchema(Schema):
-  symbol = fields.String(required=True)
-  usd_conversion_rate = fields.Float(required=True)
+from schemas import currency_schema, \
+                    rate_schema, \
+                    timereg_schema, \
+                    payment_schema, \
+                    spending_schema, \
+                    contact_schema, \
+                    invoice_schema, \
+                    invoices_schema
 
-  # def get_usd_conversion_rate(self, obj):
-  #     return 0.9
+# Detail Views
+@app.route("/currency/<string:symbol>")
+def get_currency(symbol):
+    currency = mongo.db.currencies.find_one({"symbol": symbol})
+    return currency_schema.dump(currency)
 
-class RateSchema(Schema):
-  name = fields.String(required=True)
-  price = fields.Float(required=True)
-  # currency = fields.Nested(CurrencySchema)
+@app.route("/time_registration/<int:id>")
+def get_time_registration(id):
+    time_registration = mongo.db.timeregistrations.find_one({"_id": ObjectId(id)})
+    return timereg_schema.dump(time_registration)
 
-class TimeRegistrationSchema(Schema):
-  start_date = fields.String(required=True)
-  end_date = fields.String(required=True)
-  rate = fields.Nested(RateSchema,required=True)
+@app.route("/rate/<string:name>")
+def get_rate(name):
+    rate = mongo.db.rates.find_one({"name": name })
+    return rate_schema.dump(rate)
 
-class PaymentMethodSchema(Schema):
-  name = fields.String(required=True)
+@app.route("/payment_method/<string:name>")
+def get_payment_method(name):
+    payment_method = mongo.db.paymentmethods.find_one({"name": name })
+    return payment_schema.dump(payment_method)
 
-class SpendingSchema(Schema):
-  name = fields.String(required=True)
-  amount = fields.String(required=False)
-  payment_method = fields.Nested(PaymentMethodSchema,required=False)
-  reference = fields.String(required=False)
+@app.route("/contact/<string:name>")
+def get_contact(name):
+    contact = mongo.db.contacts.find_one({"name": name })
+    return contact_schema.dump(contact)
 
-class ContactSchema(Schema):
-  title = fields.String(required=False)
-  job_title = fields.String(required=False)
-  name = fields.String(required=True)
-  company = fields.String(required=False)
-  description = fields.String(required=False)
-  company_gov_id = fields.String(required=False)
-  company_vat_id = fields.String(required=False)
-  type = fields.String(required=False)
-  relation = fields.String(required=False)
-  language = fields.String(required=False)
-  birthday = fields.String(required=False)
-  address = fields.String(required=False)
-  zip = fields.String(required=False)
-  city = fields.String(required=False)
-  country = fields.String(required=False)
-  website = fields.String(required=False)
-  phone_landline = fields.String(required=False)
-  phone_mobile = fields.String(required=False)
-  email_contact = fields.String(required=False)
-  email_invoice = fields.String(required=False)
-  bank_iban = fields.String(required=False)
-  payment_days = fields.Integer(required=False)
+@app.route("/spending/<string:name>")
+def get_spending(name):
+    spending = mongo.db.spendings.find_one({"name": name })
+    return spending_schema.dump(spending)
 
-class InvoiceSchema(Schema):
-  number = fields.String(required=True)
-  customer = fields.Nested(ContactSchema,required=True)
-  time_registrations = fields.Nested(TimeRegistrationSchema,required=False)
-  spendings = fields.Nested(SpendingSchema,required=False)
-  due_date = fields.String(required=False)
-  sent = fields.Boolean(required=False)
-  reminded_first = fields.Boolean(required=False)
-  reminded_second = fields.Boolean(required=False)
-  reminded_third = fields.Boolean(required=False)
-  payed = fields.Boolean(required=False)
-  pdf = fields.String(required=False)
-
-class TimeRegistrationSchema(Schema):
-  start_date = fields.String(required=True)
-  end_date = fields.String(required=True)
-  rate = fields.Nested(RateSchema,required=True)
-
-# Schemas used by Marshmallow
-currency_schema = CurrencySchema()
-rate_schema = RateSchema()
-timereg_schema = TimeRegistrationSchema()
-payment_schema = PaymentMethodSchema()
-spending_schema = SpendingSchema()
-contact_schema = ContactSchema()
-invoice_schema = InvoiceSchema()
-invoices_schema = InvoiceSchema(many=True)
+@app.route("/invoice/<string:number>")
+def get_invoice(number):
+    invoice = mongo.db.invoices.find_one({"number": number })
+    return invoice_schema.dump(invoice)
 
 # Add Views
 @app.route("/add_currency")
@@ -148,7 +115,9 @@ def add_invoice():
     sentia =        { "name": "Fred van der Teems" }
     visa =          { "name": "Visa" }
     spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
-    invoice =       { "number": "010014", "customer": sentia, "spendings": spending }
+    sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
+    kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
+    invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
 
     inv = invoice_schema.dump(invoice)
     invoices = mongo.db.invoices
@@ -216,5 +185,5 @@ def invoices():
     output = []
 
     for invoice in invoices.find():
-      output.append({ "number": invoice['number'], "customer": invoice['customer']})
+      output.append({ "number": invoice['number'], "customer": invoice['customer'], "time_registrations": invoice['time_registrations'], "spendings": invoice['spendings'] })
     return jsonify({'invoices' : output })
