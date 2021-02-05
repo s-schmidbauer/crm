@@ -68,52 +68,70 @@ def get_invoice(number):
 @app.route("/add_currency")
 def add_currency():
     eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
-    cs = currency_schema.dump(eur)
-    currencies = mongo.db.currencies
-    currencies.insert(cs)
-    return currency_schema.dump(eur)
+    try:
+      cs = currency_schema.dump(eur)
+      currencies = mongo.db.currencies
+      currencies.insert_one(cs)
+      return currency_schema.dump(eur)
+    except ValidationError:
+      return {"message": "Adding currency failed"}
 
 @app.route("/add_time_registration")
 def add_time_registration():
     sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
     kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
-    tr = timereg_schema.dump(kw_5)
-    timeregistrations = mongo.db.timeregistrations
-    timeregistrations.insert(tr)
-    return timereg_schema.dump(kw_5)
+    try:
+      tr = timereg_schema.dump(kw_5)
+      timeregistrations = mongo.db.timeregistrations
+      timeregistrations.insert_one(tr)
+      return timereg_schema.dump(kw_5)
+    except ValidationError:
+      return {"message": "Adding time registration failed"}
 
 @app.route("/add_rate")
 def add_rate():
     sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
-    rs = rate_schema.dump(sentia_normal)
-    rates = mongo.db.rates
-    rates.insert(rs)
-    return rate_schema.dump(sentia_normal)
+    try:
+      rs = rate_schema.dump(sentia_normal)
+      rates = mongo.db.rates
+      rates.insert(rs)
+      return rate_schema.dump(sentia_normal)
+    except ValidationError:
+      return {"message": "Adding rate failed"}
 
 @app.route("/add_payment_method")
 def add_payment_method():
     visa =          { "name": "Visa" }
-    ps = payment_schema.dump(visa)
-    paymentmethods = mongo.db.paymentmethods
-    paymentmethods.insert(ps)
-    return payment_schema.dump(visa)
+    try:
+      ps = payment_schema.dump(visa)
+      paymentmethods = mongo.db.paymentmethods
+      paymentmethods.insert(ps)
+      return payment_schema.dump(visa)
+    except ValidationError:
+      return {"message": "Adding payment method failed"}
 
 @app.route("/add_contact")
 def add_contact():
     sentia =        { "name": "Fred van der Teems" }
-    cs = contact_schema.dump(sentia)
-    contacts = mongo.db.contacts
-    contacts.insert(cs)
-    return contact_schema.dump(sentia)
+    try:
+      cs = contact_schema.dump(sentia)
+      contacts = mongo.db.contacts
+      contacts.insert(cs)
+      return contact_schema.dump(sentia)
+    except ValidationError:
+      return {"message": "Adding contact failed"}
 
 @app.route("/add_spending")
 def add_spending():
     visa =          { "name": "Visa" }
     spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
-    ss = spending_schema.dump(spending)
-    spendings = mongo.db.spendings
-    spendings.insert(ss)
-    return spending_schema.dump(spending)
+    try:
+      ss = spending_schema.dump(spending)
+      spendings = mongo.db.spendings
+      spendings.insert(ss)
+      return spending_schema.dump(spending)
+    except ValidationError:
+      return {"message": "Adding spending failed"}
 
 @app.route("/add_invoice")
 def add_invoice():
@@ -124,11 +142,13 @@ def add_invoice():
     sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
     kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
     invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
-
-    inv = invoice_schema.dump(invoice)
-    invoices = mongo.db.invoices
-    invoices.insert(inv)
-    return invoice_schema.dump(invoice)
+    try:
+      inv = invoice_schema.dump(invoice)
+      invoices = mongo.db.invoices
+      invoices.insert(inv)
+      return invoice_schema.dump(invoice)
+    except ValidationError:
+      return {"message": "Adding invoice failed"}
 
 # List Views
 @app.route("/currencies")
