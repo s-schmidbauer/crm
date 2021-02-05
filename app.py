@@ -91,6 +91,7 @@ contact_schema = ContactSchema()
 invoice_schema = InvoiceSchema()
 invoices_schema = InvoiceSchema(many=True)
 
+# Add Views
 @app.route("/add_currency")
 def add_currency():
     eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
@@ -153,6 +154,61 @@ def add_invoice():
     invoices = mongo.db.invoices
     invoices.insert(inv)
     return invoice
+
+# List Views
+@app.route("/currencies")
+def currencies():
+    currencies = mongo.db.currencies
+    output = []
+
+    for currency in currencies.find():
+      output.append({ "symbol": currency['symbol'], "usd_conversion_rate": currency['usd_conversion_rate']})
+    return jsonify({'currencies' : output })
+
+@app.route("/rates")
+def rates():
+    rates = mongo.db.rates
+    output = []
+
+    for rate in rates.find():
+      output.append({ "name": rate['name'], "price": rate['price']})
+    return jsonify({'rates' : output })
+
+@app.route("/time_registrations")
+def time_registrations():
+    timeregistrations = mongo.db.timeregistrations
+    output = []
+
+    for timeregistration in timeregistrations.find():
+      output.append({ "start_date": timeregistration['start_date'], "end_date": timeregistration['end_date']})
+    return jsonify({'time_registrations' : output })
+
+@app.route("/payment_methods")
+def payment_methods():
+    paymentmethods = mongo.db.paymentmethods
+    output = []
+
+    for paymentmethod in paymentmethods.find():
+      output.append({ "name": paymentmethod['name']})
+    return jsonify({'payment_methods' : output })
+
+@app.route("/spendings")
+def spendings():
+    spendings = mongo.db.spendings
+    output = []
+
+    for spending in spendings.find():
+      output.append({ "name": spending['name'], "amount": spending['amount'] })
+    return jsonify({'spendings' : output })
+
+@app.route("/contacts")
+def contacts():
+    contacts = mongo.db.contacts
+    output = []
+
+    for contact in contacts.find():
+      output.append({ "name": contact['name']})
+    return jsonify({'contacts' : output })
 
 @app.route("/invoices")
 def invoices():
