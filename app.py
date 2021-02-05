@@ -2,6 +2,7 @@ import sys
 import json
 from flask import Flask, request, redirect, url_for, jsonify
 from marshmallow import Schema, fields, ValidationError
+from marshmallow.validate import Length
 from datetime import datetime
 from flask_pymongo import PyMongo
 from pprint import pprint
@@ -10,7 +11,6 @@ app = Flask(__name__)
 app.secret_key = 'supersecretstuff'
 app.config['MONGO_URI'] = 'mongodb+srv://stefan:supersecret@cluster0.n7jgd.mongodb.net/crm?retryWrites=true&w=majority'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-
 mongo = PyMongo(app)
 
 from schemas import currency_schema, \
