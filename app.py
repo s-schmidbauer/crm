@@ -8,8 +8,8 @@ from pprint import pprint
 
 app = Flask(__name__)
 app.secret_key = 'supersecretstuff'
-# app.config['MONGO_DBNAME'] = 'crm'
 app.config['MONGO_URI'] = 'mongodb+srv://stefan:supersecret@cluster0.n7jgd.mongodb.net/crm?retryWrites=true&w=majority'
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 mongo = PyMongo(app)
 
@@ -148,7 +148,9 @@ def add_invoice():
     sentia =        { "name": "Fred van der Teems" }
     visa =          { "name": "Visa" }
     spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
-    invoice =       { "number": "010014", "customer": sentia, "spendings": spending }
+    sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
+    kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
+    invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
 
     inv = invoice_schema.dump(invoice)
     invoices = mongo.db.invoices
@@ -216,5 +218,5 @@ def invoices():
     output = []
 
     for invoice in invoices.find():
-      output.append({ "number": invoice['number'], "customer": invoice['customer']})
+      output.append({ "number": invoice['number'], "customer": invoice['customer'], "time_registrations": invoice['time_registrations'], "spendings": invoice['spendings'] })
     return jsonify({'invoices' : output })
