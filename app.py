@@ -28,6 +28,15 @@ from schemas import currency_schema, \
                     invoice_schema, \
                     invoices_schema
 
+# Required vars for adding
+eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
+sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
+kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
+visa =          { "name": "Visa" }
+sentia =        { "name": "Fred van der Teems" }
+spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
+invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
+
 # Detail Views
 @app.route("/currency/<string:symbol>")
 def get_currency(symbol):
@@ -67,7 +76,6 @@ def get_invoice(number):
 # Add Views
 @app.route("/add_currency")
 def add_currency():
-    eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
     try:
       cs = currency_schema.dump(eur)
       currencies = mongo.db.currencies
@@ -78,8 +86,6 @@ def add_currency():
 
 @app.route("/add_time_registration")
 def add_time_registration():
-    sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
-    kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
     try:
       tr = timereg_schema.dump(kw_5)
       timeregistrations = mongo.db.timeregistrations
@@ -90,7 +96,6 @@ def add_time_registration():
 
 @app.route("/add_rate")
 def add_rate():
-    sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
     try:
       rs = rate_schema.dump(sentia_normal)
       rates = mongo.db.rates
@@ -101,7 +106,6 @@ def add_rate():
 
 @app.route("/add_payment_method")
 def add_payment_method():
-    visa =          { "name": "Visa" }
     try:
       ps = payment_schema.dump(visa)
       paymentmethods = mongo.db.paymentmethods
@@ -112,7 +116,6 @@ def add_payment_method():
 
 @app.route("/add_contact")
 def add_contact():
-    sentia =        { "name": "Fred van der Teems" }
     try:
       cs = contact_schema.dump(sentia)
       contacts = mongo.db.contacts
@@ -123,8 +126,6 @@ def add_contact():
 
 @app.route("/add_spending")
 def add_spending():
-    visa =          { "name": "Visa" }
-    spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
     try:
       ss = spending_schema.dump(spending)
       spendings = mongo.db.spendings
@@ -135,13 +136,6 @@ def add_spending():
 
 @app.route("/add_invoice")
 def add_invoice():
-    # register some time
-    sentia =        { "name": "Fred van der Teems" }
-    visa =          { "name": "Visa" }
-    spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
-    sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
-    kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
-    invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
     try:
       inv = invoice_schema.dump(invoice)
       invoices = mongo.db.invoices
