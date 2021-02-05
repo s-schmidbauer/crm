@@ -1,8 +1,8 @@
 import sys
 import json
-from flask import Flask, request, redirect, url_for, jsonify
-from marshmallow import Schema, fields, ValidationError
-from marshmallow.validate import Length
+from flask import Flask, request, redirect, url_for, jsonify, abort
+from marshmallow import ValidationError
+# from marshmallow.validate import Length
 from datetime import datetime
 from flask_pymongo import PyMongo
 from pprint import pprint
@@ -36,6 +36,14 @@ visa =          { "name": "Visa" }
 sentia =        { "name": "Fred van der Teems" }
 spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
 invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
+
+@app.errorhandler(404)
+def resource_not_found(e):
+    return jsonify(error=str(e)), 404
+
+@app.errorhandler(400)
+def bad_request(e):
+    return jsonify(error=str(e)), 400
 
 # Detail Views
 @app.route("/currency/<string:symbol>")
@@ -143,6 +151,83 @@ def add_invoice():
       return invoice_schema.dump(invoice)
     except ValidationError:
       return {"message": "Adding invoice failed"}
+
+# Update Views
+# They validate the json input provided
+@app.route("/currency/", methods=['PUT'])
+def update_currency():
+  try:
+    errors = currency_schema.validate(request.json)
+    sym = request.json["symbol"]
+  except ValidationError:
+    abort(400)
+  c = mongo.db.currencies.replace_one({ "symbol": sym }, request.json)
+  return { "matched_count": c.matched_count }
+
+@app.route("/time_registration/", methods=['PUT'])
+def update_time_registration():
+  try:
+    errors = timereg_schema.validate(request.json)
+    id = request.json["id"]
+  except ValidationError:
+    abort(400)
+  tr = mongo.db.timeregistrations.replace_one({ "_id": ObjectId(id) }, request.json)
+  return { "matched_count": tr.matched_count }
+
+@app.route("/rate/", methods=['PUT'])
+def update_rate():
+  try:
+    errors = rate_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  r = mongo.db.rates.replace_one({ "name": name }, request.json)
+  return { "matched_count": r.matched_count }
+
+@app.route("/payment_method/", methods=['PUT'])
+def update_payment_method():
+  try:
+    errors = payment_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  pm = mongo.db.paymentmethods.replace_one({ "name": name }, request.json)
+  return { "matched_count": pm.matched_count }
+
+@app.route("/contact/", methods=['PUT'])
+def update_contact():
+  try:
+    errors = payment_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+    c = mongo.db.contacts.replace_one({ "name": name }, request.json)
+  return { "matched_count": c.matched_count }
+
+@app.route("/spending/", methods=['PUT'])
+def update_spending():
+  try:
+    errors = spending_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+    s = mongo.db.contacts.replace_one({ "name": name }, request.json)
+  return { "matched_count": s.matched_count }
+
+@app.route("/invoice/", methods=['PUT'])
+def update_invoice():
+  try:
+    errors = invoice_schema.validate(request.json)
+    number = request.json["number"]
+  except ValidationError:
+    abort(400)
+    i = mongo.db.contacts.replace_one({ "number": number }, request.json)
+  return { "matched_count": i.matched_count }
+
+# @app.route("/invoice/<string:number>")
+# def update_invoice(number):
+#     invoice = mongo.db.invoices.find_one_or_404({"number": number })
+#     return invoice_schema.dump(invoice)
 
 # List Views
 @app.route("/currencies")
