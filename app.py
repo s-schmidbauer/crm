@@ -91,6 +91,42 @@ contact_schema = ContactSchema()
 invoice_schema = InvoiceSchema()
 invoices_schema = InvoiceSchema(many=True)
 
+# Detail Views
+@app.route("/currency/<string:symbol>")
+def get_currency(symbol):
+    currency = mongo.db.currencies.find_one({"symbol": symbol})
+    return currency_schema.dump(currency)
+
+@app.route("/time_registration/<int:id>")
+def get_time_registration(id):
+    time_registration = mongo.db.timeregistrations.find_one({"_id": ObjectId(id)})
+    return timereg_schema.dump(time_registration)
+
+@app.route("/rate/<string:name>")
+def get_rate(name):
+    rate = mongo.db.rates.find_one({"name": name })
+    return rate_schema.dump(rate)
+
+@app.route("/payment_method/<string:name>")
+def get_payment_method(name):
+    payment_method = mongo.db.paymentmethods.find_one({"name": name })
+    return payment_schema.dump(payment_method)
+
+@app.route("/contact/<string:name>")
+def get_contact(name):
+    contact = mongo.db.contacts.find_one({"name": name })
+    return contact_schema.dump(contact)
+
+@app.route("/spending/<string:name>")
+def get_spending(name):
+    spending = mongo.db.spendings.find_one({"name": name })
+    return spending_schema.dump(spending)
+
+@app.route("/invoice/<string:number>")
+def get_invoice(number):
+    invoice = mongo.db.invoices.find_one({"number": number })
+    return invoice_schema.dump(invoice)
+
 # Add Views
 @app.route("/add_currency")
 def add_currency():
