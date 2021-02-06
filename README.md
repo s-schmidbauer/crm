@@ -28,12 +28,12 @@ curl --header "Content-Type: application/json" -X GET "http://127.0.0.1:5000/rat
 ## Update
 Use `find` to query the objects unique identifier
 ```
-curl --header "Content-Type: application/json" -X PUT -d '{ "find": "USD", "symbol": "US Dollar", "usd_conversion_rate": "0.33" }' http://127.0.0.1:5000/currency/
+curl --header "Content-Type: application/json" -X PUT -d '{ "find": "USD", "symbol": "US Dollar", "usd_conversion_rate": "0.33" }' http://127.0.0.1:5000/currency
 ```
 
 ## Delete
 ```
-curl --header "Content-Type: application/json" -X DELETE -d '{ "name": "Corp" }' "http://127.0.0.1:5000/rate/"
+curl --header "Content-Type: application/json" -X DELETE -d '{ "name": "Corp" }' "http://127.0.0.1:5000/rate"
 {
   "deleted_count": 1
 }

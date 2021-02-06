@@ -150,7 +150,7 @@ def add_spending():
     except ValidationError:
       return {"message": "Adding spending failed"}
 
-@app.route("/invoice/", methods=['POST'])
+@app.route("/invoice", methods=['POST'])
 def add_invoice():
     try:
       data = request.json
@@ -164,7 +164,7 @@ def add_invoice():
 # Update Views
 # They validate the json input provided
 # They use find data to identify the object
-@app.route("/currency/", methods=['PUT'])
+@app.route("/currency", methods=['PUT'])
 def update_currency():
   try:
     errors = currency_schema.validate(request.json)
@@ -174,7 +174,7 @@ def update_currency():
   c = mongo.db.currencies.replace_one({ "symbol": sym }, request.json)
   return { "matched_count": c.matched_count }
 
-@app.route("/time_registration/", methods=['PUT'])
+@app.route("/time_registration", methods=['PUT'])
 def update_time_registration():
   try:
     errors = timereg_schema.validate(request.json)
@@ -184,7 +184,7 @@ def update_time_registration():
   tr = mongo.db.timeregistrations.replace_one({ "_id": ObjectId(id) }, request.json)
   return { "matched_count": tr.matched_count }
 
-@app.route("/rate/", methods=['PUT'])
+@app.route("/rate", methods=['PUT'])
 def update_rate():
   try:
     errors = rate_schema.validate(request.json)
@@ -194,7 +194,7 @@ def update_rate():
   r = mongo.db.rates.replace_one({ "name": name }, request.json)
   return { "matched_count": r.matched_count }
 
-@app.route("/payment_method/", methods=['PUT'])
+@app.route("/payment_method", methods=['PUT'])
 def update_payment_method():
   try:
     errors = payment_schema.validate(request.json)
@@ -204,7 +204,7 @@ def update_payment_method():
   pm = mongo.db.paymentmethods.replace_one({ "name": name }, request.json)
   return { "matched_count": pm.matched_count }
 
-@app.route("/contact/", methods=['PUT'])
+@app.route("/contact", methods=['PUT'])
 def update_contact():
   try:
     errors = payment_schema.validate(request.json)
@@ -214,7 +214,7 @@ def update_contact():
   c = mongo.db.contacts.replace_one({ "name": name }, request.json)
   return { "matched_count": c.matched_count }
 
-@app.route("/spending/", methods=['PUT'])
+@app.route("/spending", methods=['PUT'])
 def update_spending():
   try:
     errors = spending_schema.validate(request.json)
@@ -224,7 +224,7 @@ def update_spending():
   s = mongo.db.contacts.replace_one({ "name": name }, request.json)
   return { "matched_count": s.matched_count }
 
-@app.route("/invoice/", methods=['PUT'])
+@app.route("/invoice", methods=['PUT'])
 def update_invoice():
   try:
     errors = invoice_schema.validate(request.json)
@@ -236,7 +236,7 @@ def update_invoice():
 
 # Delete Views
 # They validate the json input provided
-@app.route("/currency/", methods=['DELETE'])
+@app.route("/currency", methods=['DELETE'])
 def delete_currency():
   try:
     errors = currency_schema.validate(request.json)
@@ -246,7 +246,7 @@ def delete_currency():
   c = mongo.db.currencies.delete_one({ "symbol": sym })
   return { "deleted_count": c.deleted_count }
 
-@app.route("/time_registration/", methods=['DELETE'])
+@app.route("/time_registration", methods=['DELETE'])
 def delete_time_registration():
   try:
     errors = timereg_schema.validate(request.json)
@@ -256,7 +256,7 @@ def delete_time_registration():
   tr = mongo.db.timeregistrations.delete_one({ "_id": ObjectId(id) })
   return { "deleted_count": tr.deleted_count }
 
-@app.route("/rate/", methods=['DELETE'])
+@app.route("/rate", methods=['DELETE'])
 def delete_rate():
   try:
     errors = rate_schema.validate(request.json)
@@ -266,7 +266,7 @@ def delete_rate():
   r = mongo.db.rates.delete_one({ "name": name })
   return { "deleted_count": r.deleted_count }
 
-@app.route("/payment_method/", methods=['DELETE'])
+@app.route("/payment_method", methods=['DELETE'])
 def delete_payment_method():
   try:
     errors = payment_schema.validate(request.json)
@@ -276,7 +276,7 @@ def delete_payment_method():
   pm = mongo.db.paymentmethods.delete_one({ "name": name })
   return { "deleted_count": pm.deleted_count }
 
-@app.route("/contact/", methods=['DELETE'])
+@app.route("/contact", methods=['DELETE'])
 def delete_contact():
   try:
     errors = payment_schema.validate(request.json)
@@ -286,7 +286,7 @@ def delete_contact():
   c = mongo.db.contacts.replace_one({ "name": name })
   return { "matched_count": c.matched_count }
 
-@app.route("/spending/", methods=['DELETE'])
+@app.route("/spending", methods=['DELETE'])
 def delete_spending():
   try:
     errors = spending_schema.validate(request.json)
@@ -296,7 +296,7 @@ def delete_spending():
   s = mongo.db.contacts.replace_one({ "name": name })
   return { "matched_count": s.matched_count }
 
-@app.route("/invoice/", methods=['DELETE'])
+@app.route("/invoice", methods=['DELETE'])
 def delete_invoice():
   try:
     errors = invoice_schema.validate(request.json)
