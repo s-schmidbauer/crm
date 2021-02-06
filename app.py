@@ -34,7 +34,7 @@ eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
 normal =        { "name": "Corp", "price": "34.0", "currency": eur }
 kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": normal }
 visa =          { "name": "Visa" }
-sentia =        { "name": "Fred Flintstone" }
+sentia =        { "name": "Fred Flintstone", "website": "https://www.google.com" }
 spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
 invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
 
@@ -224,6 +224,79 @@ def update_invoice():
     abort(400)
   i = mongo.db.contacts.replace_one({ "number": number }, request.json)
   return { "matched_count": i.matched_count }
+
+# Delete Views
+# They validate the json input provided
+@app.route("/currency/", methods=['DELETE'])
+def delete_currency():
+  try:
+    errors = currency_schema.validate(request.json)
+    sym = request.json["symbol"]
+  except ValidationError:
+    abort(400)
+  c = mongo.db.currencies.delete_one({ "symbol": sym })
+  return { "matched_count": c.matched_count }
+
+@app.route("/time_registration/", methods=['DELETE'])
+def delete_time_registration():
+  try:
+    errors = timereg_schema.validate(request.json)
+    id = request.json["id"]
+  except ValidationError:
+    abort(400)
+  tr = mongo.db.timeregistrations.delete_one({ "_id": ObjectId(id) })
+  return { "matched_count": tr.matched_count }
+
+@app.route("/rate/", methods=['DELETE'])
+def delete_rate():
+  try:
+    errors = rate_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  r = mongo.db.rates.delete_one({ "name": name })
+  return { "matched_count": r.matched_count }
+
+@app.route("/payment_method/", methods=['DELETE'])
+def delete_payment_method():
+  try:
+    errors = payment_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  pm = mongo.db.paymentmethods.delete_one({ "name": name })
+  return { "matched_count": pm.matched_count }
+
+@app.route("/contact/", methods=['DELETE'])
+def delete_contact():
+  try:
+    errors = payment_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  c = mongo.db.contacts.replace_one({ "name": name })
+  return { "matched_count": c.matched_count }
+
+@app.route("/spending/", methods=['DELETE'])
+def delete_spending():
+  try:
+    errors = spending_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  s = mongo.db.contacts.replace_one({ "name": name })
+  return { "matched_count": s.matched_count }
+
+@app.route("/invoice/", methods=['DELETE'])
+def delete_invoice():
+  try:
+    errors = invoice_schema.validate(request.json)
+    number = request.json["number"]
+  except ValidationError:
+    abort(400)
+  i = mongo.db.contacts.replace_one({ "number": number })
+  return { "matched_count": i.matched_count }
+
 
 # List Views
 @app.route("/currencies")
