@@ -11,7 +11,13 @@ class CurrencySchema(Schema):
 class RateSchema(Schema):
   name = fields.String(required=True, validate=Length(min=1, max=20))
   price = fields.Float(required=True)
-  # currency = fields.Nested(CurrencySchema)
+  currency = fields.Nested(CurrencySchema)
+
+  class Meta:
+    links = ma.Hyperlinks({
+      'self': ma.URLFor('rate', values=dict(name='<name>')),
+      'collection': URLFor('rates'),
+    })
 
 class TimeRegistrationSchema(Schema):
   start_date = fields.String(required=True, validate=Length(min=6, max=10))
