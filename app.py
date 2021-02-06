@@ -12,6 +12,7 @@ app.secret_key = 'supersecretstuff'
 app.config['MONGO_URI'] = 'mongodb+srv://stefan:supersecret@cluster0.n7jgd.mongodb.net/crm?retryWrites=true&w=majority'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 mongo = PyMongo(app)
+ma = Marshmallow(app)
 
 from schemas import currency_schema, \
                     currencies_schema, \
@@ -30,10 +31,10 @@ from schemas import currency_schema, \
 
 # Required vars for adding
 eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
-sentia_normal = { "name": "Sentia 100%", "price": "34.0" }
-kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": sentia_normal }
+normal =        { "name": "Corp", "price": "34.0", "currency": eur }
+kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": normal }
 visa =          { "name": "Visa" }
-sentia =        { "name": "Fred van der Teems" }
+sentia =        { "name": "Fred Flintstone" }
 spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
 invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
 
@@ -46,43 +47,43 @@ def bad_request(e):
     return jsonify(error=str(e)), 400
 
 # Detail Views
-@app.route("/currency/<string:symbol>")
+@app.route("/currency/<string:symbol>", methods=['GET'])
 def get_currency(symbol):
     currency = mongo.db.currencies.find_one_or_404({"symbol": symbol})
     return currency_schema.dump(currency)
 
-@app.route("/time_registration/<int:id>")
+@app.route("/time_registration/<int:id>", methods=['GET'])
 def get_time_registration(id):
     time_registration = mongo.db.timeregistrations.find_one_or_404({"_id": ObjectId(id)})
     return timereg_schema.dump(time_registration)
 
-@app.route("/rate/<string:name>")
+@app.route("/rate/<string:name>", methods=['GET'])
 def get_rate(name):
     rate = mongo.db.rates.find_one_or_404({"name": name })
     return rate_schema.dump(rate)
 
-@app.route("/payment_method/<string:name>")
+@app.route("/payment_method/<string:name>", methods=['GET'])
 def get_payment_method(name):
     payment_method = mongo.db.paymentmethods.find_one_or_404({"name": name })
     return payment_schema.dump(payment_method)
 
-@app.route("/contact/<string:name>")
+@app.route("/contact/<string:name>", methods=['GET'])
 def get_contact(name):
     contact = mongo.db.contacts.find_one_or_404({"name": name })
     return contact_schema.dump(contact)
 
-@app.route("/spending/<string:name>")
+@app.route("/spending/<string:name>", methods=['GET'])
 def get_spending(name):
     spending = mongo.db.spendings.find_one_or_404({"name": name })
     return spending_schema.dump(spending)
 
-@app.route("/invoice/<string:number>")
+@app.route("/invoice/<string:number>", methods=['GET'])
 def get_invoice(number):
     invoice = mongo.db.invoices.find_one_or_404({"number": number })
     return invoice_schema.dump(invoice)
 
 # Add Views
-@app.route("/add_currency")
+@app.route("/add_currency", methods=['POST'])
 def add_currency():
     try:
       cs = currency_schema.dump(eur)
@@ -92,7 +93,7 @@ def add_currency():
     except ValidationError:
       return {"message": "Adding currency failed"}
 
-@app.route("/add_time_registration")
+@app.route("/add_time_registration", methods=['POST'])
 def add_time_registration():
     try:
       tr = timereg_schema.dump(kw_5)
@@ -102,17 +103,17 @@ def add_time_registration():
     except ValidationError:
       return {"message": "Adding time registration failed"}
 
-@app.route("/add_rate")
+@app.route("/add_rate", methods=['POST'])
 def add_rate():
     try:
-      rs = rate_schema.dump(sentia_normal)
+      rs = rate_schema.dump(normal)
       rates = mongo.db.rates
       rates.insert(rs)
-      return rate_schema.dump(sentia_normal)
+      return rate_schema.dump(normal)
     except ValidationError:
       return {"message": "Adding rate failed"}
 
-@app.route("/add_payment_method")
+@app.route("/add_payment_method", methods=['POST'])
 def add_payment_method():
     try:
       ps = payment_schema.dump(visa)
@@ -122,7 +123,7 @@ def add_payment_method():
     except ValidationError:
       return {"message": "Adding payment method failed"}
 
-@app.route("/add_contact")
+@app.route("/add_contact", methods=['POST'])
 def add_contact():
     try:
       cs = contact_schema.dump(sentia)
@@ -132,7 +133,7 @@ def add_contact():
     except ValidationError:
       return {"message": "Adding contact failed"}
 
-@app.route("/add_spending")
+@app.route("/add_spending", methods=['POST'])
 def add_spending():
     try:
       ss = spending_schema.dump(spending)
@@ -142,7 +143,7 @@ def add_spending():
     except ValidationError:
       return {"message": "Adding spending failed"}
 
-@app.route("/add_invoice")
+@app.route("/add_invoice", methods=['POST'])
 def add_invoice():
     try:
       inv = invoice_schema.dump(invoice)
@@ -201,7 +202,7 @@ def update_contact():
     name = request.json["name"]
   except ValidationError:
     abort(400)
-    c = mongo.db.contacts.replace_one({ "name": name }, request.json)
+  c = mongo.db.contacts.replace_one({ "name": name }, request.json)
   return { "matched_count": c.matched_count }
 
 @app.route("/spending/", methods=['PUT'])
@@ -211,7 +212,7 @@ def update_spending():
     name = request.json["name"]
   except ValidationError:
     abort(400)
-    s = mongo.db.contacts.replace_one({ "name": name }, request.json)
+  s = mongo.db.contacts.replace_one({ "name": name }, request.json)
   return { "matched_count": s.matched_count }
 
 @app.route("/invoice/", methods=['PUT'])
@@ -221,13 +222,8 @@ def update_invoice():
     number = request.json["number"]
   except ValidationError:
     abort(400)
-    i = mongo.db.contacts.replace_one({ "number": number }, request.json)
+  i = mongo.db.contacts.replace_one({ "number": number }, request.json)
   return { "matched_count": i.matched_count }
-
-# @app.route("/invoice/<string:number>")
-# def update_invoice(number):
-#     invoice = mongo.db.invoices.find_one_or_404({"number": number })
-#     return invoice_schema.dump(invoice)
 
 # List Views
 @app.route("/currencies")
