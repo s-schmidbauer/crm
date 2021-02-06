@@ -14,10 +14,10 @@ class CurrencySchema(Schema):
   class Meta:
     ordered = True
 
-  _links = ma.Hyperlinks({
-      'self': ma.URLFor('get_currency', values=dict(symbol='<symbol>')),
-      'collection': ma.URLFor('currencies'),
-    })
+  # _links = ma.Hyperlinks({
+  #     'self': ma.URLFor('get_currency', values=dict(symbol='<symbol>')),
+  #     'collection': ma.URLFor('currencies'),
+  #   })
 
 class RateSchema(Schema):
   name = fields.String(required=True, unique=True, validate=Length(min=1, max=20))
@@ -27,10 +27,10 @@ class RateSchema(Schema):
   class Meta:
     ordered = True
 
-  _links = ma.Hyperlinks({
-      'self': ma.URLFor('get_rate', values=dict(name='<name>')),
-      'collection': ma.URLFor('rates'),
-    })
+  # _links = ma.Hyperlinks({
+  #     'self': ma.URLFor('get_rate', values=dict(name='<name>')),
+  #     'collection': ma.URLFor('rates'),
+  #   })
 
 class TimeRegistrationSchema(Schema):
   start_date = fields.String(required=True, validate=Length(min=6, max=10))
@@ -51,10 +51,10 @@ class PaymentMethodSchema(Schema):
   class Meta:
     ordered = True
 
-  _links = ma.Hyperlinks({
-      'self': ma.URLFor('get_payment_method', values=dict(name='<name>')),
-      'collection': ma.URLFor('payment_methods'),
-    })
+  # _links = ma.Hyperlinks({
+  #     'self': ma.URLFor('get_payment_method', values=dict(name='<name>')),
+  #     'collection': ma.URLFor('payment_methods'),
+  #   })
 
 class SpendingSchema(Schema):
   name = fields.String(required=True, validate=Length(min=3, max=50))
@@ -65,10 +65,10 @@ class SpendingSchema(Schema):
   class Meta:
     ordered = True
 
-  _links = ma.Hyperlinks({
-      'self': ma.URLFor('get_spending', values=dict(name='<name>')),
-      'collection': ma.URLFor('spendings'),
-    })
+  # _links = ma.Hyperlinks({
+  #     'self': ma.URLFor('get_spending', values=dict(name='<name>')),
+  #     'collection': ma.URLFor('spendings'),
+  #   })
 
 class ContactSchema(Schema):
   title = fields.String(required=False, validate=Length(min=2, max=10))
@@ -97,10 +97,10 @@ class ContactSchema(Schema):
   class Meta:
     ordered = True
 
-  _links = ma.Hyperlinks({
-      'self': ma.URLFor('get_contact', values=dict(name='<name>')),
-      'collection': ma.URLFor('contacts'),
-    })
+  # _links = ma.Hyperlinks({
+  #     'self': ma.URLFor('get_contact', values=dict(name='<name>')),
+  #     'collection': ma.URLFor('contacts'),
+  #   })
 
 class InvoiceSchema(Schema):
   number = fields.String(required=True, unique=True, validate=Length(min=1, max=20))
@@ -118,10 +118,10 @@ class InvoiceSchema(Schema):
   class Meta:
     ordered = True
 
-  _links = ma.Hyperlinks({
-      'self': ma.URLFor('get_invoice', values=dict(number='<number>')),
-      'collection': ma.URLFor('invoices'),
-    })
+  # _links = ma.Hyperlinks({
+  #     'self': ma.URLFor('get_invoice', values=dict(number='<number>')),
+  #     'collection': ma.URLFor('invoices'),
+  #   })
 
 class TimeRegistrationSchema(Schema):
   start_date = fields.String(required=True, validate=Length(min=6, max=10))
