@@ -26,8 +26,9 @@ curl --header "Content-Type: application/json" -X GET "http://127.0.0.1:5000/rat
 ```
 
 ## Update
+Use `find` to query the objects unique identifier
 ```
-curl --header "Content-Type: application/json" -X PUT -d '{ "name": "Sentia 100%", "price": "54.55" }' http://127.0.0.1:5000/rate/
+curl --header "Content-Type: application/json" -X PUT -d '{ "find": "USD", "symbol": "US Dollar", "usd_conversion_rate": "0.33" }' http://127.0.0.1:5000/currency/
 ```
 
 ## Delete

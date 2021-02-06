@@ -163,11 +163,12 @@ def add_invoice():
 
 # Update Views
 # They validate the json input provided
+# They use find data to identify the object
 @app.route("/currency/", methods=['PUT'])
 def update_currency():
   try:
     errors = currency_schema.validate(request.json)
-    sym = request.json["symbol"]
+    sym = request.json["find"]
   except ValidationError:
     abort(400)
   c = mongo.db.currencies.replace_one({ "symbol": sym }, request.json)
@@ -177,7 +178,7 @@ def update_currency():
 def update_time_registration():
   try:
     errors = timereg_schema.validate(request.json)
-    id = request.json["id"]
+    id = request.json["find"]
   except ValidationError:
     abort(400)
   tr = mongo.db.timeregistrations.replace_one({ "_id": ObjectId(id) }, request.json)
@@ -187,7 +188,7 @@ def update_time_registration():
 def update_rate():
   try:
     errors = rate_schema.validate(request.json)
-    name = request.json["name"]
+    name = request.json["find"]
   except ValidationError:
     abort(400)
   r = mongo.db.rates.replace_one({ "name": name }, request.json)
@@ -197,7 +198,7 @@ def update_rate():
 def update_payment_method():
   try:
     errors = payment_schema.validate(request.json)
-    name = request.json["name"]
+    name = request.json["find"]
   except ValidationError:
     abort(400)
   pm = mongo.db.paymentmethods.replace_one({ "name": name }, request.json)
@@ -207,7 +208,7 @@ def update_payment_method():
 def update_contact():
   try:
     errors = payment_schema.validate(request.json)
-    name = request.json["name"]
+    name = request.json["find"]
   except ValidationError:
     abort(400)
   c = mongo.db.contacts.replace_one({ "name": name }, request.json)
@@ -217,7 +218,7 @@ def update_contact():
 def update_spending():
   try:
     errors = spending_schema.validate(request.json)
-    name = request.json["name"]
+    name = request.json["find"]
   except ValidationError:
     abort(400)
   s = mongo.db.contacts.replace_one({ "name": name }, request.json)
@@ -227,7 +228,7 @@ def update_spending():
 def update_invoice():
   try:
     errors = invoice_schema.validate(request.json)
-    number = request.json["number"]
+    number = request.json["find"]
   except ValidationError:
     abort(400)
   i = mongo.db.contacts.replace_one({ "number": number }, request.json)
