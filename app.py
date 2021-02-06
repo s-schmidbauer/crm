@@ -50,37 +50,37 @@ def bad_request(e):
 @app.route("/currency/<string:symbol>", methods=['GET'])
 def get_currency(symbol):
     currency = mongo.db.currencies.find_one_or_404({"symbol": symbol})
-    return currency_schema.dump(currency)
+    return {"currency": currency_schema.dump(currency)}
 
 @app.route("/time_registration/<int:id>", methods=['GET'])
 def get_time_registration(id):
     time_registration = mongo.db.timeregistrations.find_one_or_404({"_id": ObjectId(id)})
-    return timereg_schema.dump(time_registration)
+    return {"time_registration": timereg_schema.dump(time_registration)}
 
 @app.route("/rate/<string:name>", methods=['GET'])
 def get_rate(name):
     rate = mongo.db.rates.find_one_or_404({"name": name })
-    return rate_schema.dump(rate)
+    return {"rate":rate_schema.dump(rate)}
 
 @app.route("/payment_method/<string:name>", methods=['GET'])
 def get_payment_method(name):
     payment_method = mongo.db.paymentmethods.find_one_or_404({"name": name })
-    return payment_schema.dump(payment_method)
+    return {"payment_method": payment_schema.dump(payment_method)}
 
 @app.route("/contact/<string:name>", methods=['GET'])
 def get_contact(name):
     contact = mongo.db.contacts.find_one_or_404({"name": name })
-    return contact_schema.dump(contact)
+    return {"contact": contact_schema.dump(contact)}
 
 @app.route("/spending/<string:name>", methods=['GET'])
 def get_spending(name):
     spending = mongo.db.spendings.find_one_or_404({"name": name })
-    return spending_schema.dump(spending)
+    return {"spending": spending_schema.dump(spending)}
 
 @app.route("/invoice/<string:number>", methods=['GET'])
 def get_invoice(number):
     invoice = mongo.db.invoices.find_one_or_404({"number": number })
-    return invoice_schema.dump(invoice)
+    return {"invoice":invoice_schema.dump(invoice)}
 
 # Add Views
 @app.route("/currency", methods=['POST'])
