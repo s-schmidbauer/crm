@@ -15,7 +15,7 @@ class CurrencySchema(Schema):
     ordered = True
 
   _links = ma.Hyperlinks({
-      'self': ma.URLFor('get_currency', values=dict(name='<symbol>')),
+      'self': ma.URLFor('get_currency', values=dict(symbol='<symbol>')),
       'collection': ma.URLFor('currencies'),
     })
 
