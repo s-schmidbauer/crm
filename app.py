@@ -83,73 +83,81 @@ def get_invoice(number):
     return invoice_schema.dump(invoice)
 
 # Add Views
-@app.route("/add_currency", methods=['POST'])
+@app.route("/currency", methods=['POST'])
 def add_currency():
     try:
-      cs = currency_schema.dump(eur)
+      data = request.json
+      cs = currency_schema.dump(data)
       currencies = mongo.db.currencies
       currencies.insert_one(cs)
-      return currency_schema.dump(eur)
+      return currency_schema.dump(data)
     except ValidationError:
       return {"message": "Adding currency failed"}
 
-@app.route("/add_time_registration", methods=['POST'])
+
+@app.route("/time_registration", methods=['POST'])
 def add_time_registration():
     try:
-      tr = timereg_schema.dump(kw_5)
+      data = request.json
+      tr = timereg_schema.dump(data)
       timeregistrations = mongo.db.timeregistrations
       timeregistrations.insert_one(tr)
-      return timereg_schema.dump(kw_5)
+      return timereg_schema.dump(data)
     except ValidationError:
       return {"message": "Adding time registration failed"}
 
-@app.route("/add_rate", methods=['POST'])
+@app.route("/rate", methods=['POST'])
 def add_rate():
     try:
-      rs = rate_schema.dump(normal)
+      data = request.json
+      rs = rate_schema.dump(data)
       rates = mongo.db.rates
       rates.insert(rs)
-      return rate_schema.dump(normal)
+      return rate_schema.dump(data)
     except ValidationError:
       return {"message": "Adding rate failed"}
 
-@app.route("/add_payment_method", methods=['POST'])
+@app.route("/payment_method", methods=['POST'])
 def add_payment_method():
     try:
-      ps = payment_schema.dump(visa)
+      data = request.json
+      ps = payment_schema.dump(data)
       paymentmethods = mongo.db.paymentmethods
       paymentmethods.insert(ps)
-      return payment_schema.dump(visa)
+      return payment_schema.dump(data)
     except ValidationError:
       return {"message": "Adding payment method failed"}
 
-@app.route("/add_contact", methods=['POST'])
+@app.route("/contact", methods=['POST'])
 def add_contact():
     try:
-      cs = contact_schema.dump(sentia)
+      data = request.json
+      cs = contact_schema.dump(data)
       contacts = mongo.db.contacts
       contacts.insert(cs)
-      return contact_schema.dump(sentia)
+      return contact_schema.dump(data)
     except ValidationError:
       return {"message": "Adding contact failed"}
 
-@app.route("/add_spending", methods=['POST'])
+@app.route("/spending", methods=['POST'])
 def add_spending():
     try:
-      ss = spending_schema.dump(spending)
+      data = request.json
+      ss = spending_schema.dump(data)
       spendings = mongo.db.spendings
       spendings.insert(ss)
-      return spending_schema.dump(spending)
+      return spending_schema.dump(data)
     except ValidationError:
       return {"message": "Adding spending failed"}
 
-@app.route("/add_invoice", methods=['POST'])
+@app.route("/invoice/", methods=['POST'])
 def add_invoice():
     try:
-      inv = invoice_schema.dump(invoice)
+      data = request.json
+      inv = invoice_schema.dump(data)
       invoices = mongo.db.invoices
       invoices.insert(inv)
-      return invoice_schema.dump(invoice)
+      return invoice_schema.dump(data)
     except ValidationError:
       return {"message": "Adding invoice failed"}
 
@@ -235,7 +243,7 @@ def delete_currency():
   except ValidationError:
     abort(400)
   c = mongo.db.currencies.delete_one({ "symbol": sym })
-  return { "matched_count": c.matched_count }
+  return { "deleted_count": c.deleted_count }
 
 @app.route("/time_registration/", methods=['DELETE'])
 def delete_time_registration():
@@ -245,7 +253,7 @@ def delete_time_registration():
   except ValidationError:
     abort(400)
   tr = mongo.db.timeregistrations.delete_one({ "_id": ObjectId(id) })
-  return { "matched_count": tr.matched_count }
+  return { "deleted_count": tr.deleted_count }
 
 @app.route("/rate/", methods=['DELETE'])
 def delete_rate():
@@ -255,7 +263,7 @@ def delete_rate():
   except ValidationError:
     abort(400)
   r = mongo.db.rates.delete_one({ "name": name })
-  return { "matched_count": r.matched_count }
+  return { "deleted_count": r.deleted_count }
 
 @app.route("/payment_method/", methods=['DELETE'])
 def delete_payment_method():
@@ -265,7 +273,7 @@ def delete_payment_method():
   except ValidationError:
     abort(400)
   pm = mongo.db.paymentmethods.delete_one({ "name": name })
-  return { "matched_count": pm.matched_count }
+  return { "deleted_count": pm.deleted_count }
 
 @app.route("/contact/", methods=['DELETE'])
 def delete_contact():
