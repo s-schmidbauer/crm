@@ -5,7 +5,7 @@ from flask_marshmallow import Marshmallow
 from app import app, ma
 
 class CurrencySchema(Schema):
-  symbol = fields.String(required=True, validate=Length(min=1, max=3))
+  symbol = fields.String(required=True, unique=True, validate=Length(min=1, max=3))
   usd_conversion_rate = fields.Float(required=True)
 
   # def get_usd_conversion_rate(self, obj):
@@ -46,7 +46,7 @@ class TimeRegistrationSchema(Schema):
   #   })
 
 class PaymentMethodSchema(Schema):
-  name = fields.String(required=True, validate=Length(min=3, max=20))
+  name = fields.String(required=True, unique=True, validate=Length(min=3, max=20))
 
   class Meta:
     ordered = True
@@ -103,7 +103,7 @@ class ContactSchema(Schema):
     })
 
 class InvoiceSchema(Schema):
-  number = fields.String(required=True, validate=Length(min=1, max=20))
+  number = fields.String(required=True, unique=True, validate=Length(min=1, max=20))
   customer = fields.Nested(ContactSchema, required=True)
   time_registrations = fields.Nested(TimeRegistrationSchema, required=False)
   spendings = fields.Nested(SpendingSchema, required=False)
