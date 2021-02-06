@@ -86,11 +86,11 @@ class ContactSchema(Schema):
   zip = fields.String(required=False, validate=Length(min=3, max=10))
   city = fields.String(required=False, validate=Length(min=3, max=20))
   country = fields.String(required=False, validate=Length(min=2))
-  website = fields.String(required=False, validate=Length(min=10, max=30))
+  website = fields.URL(required=False, validate=Length(min=10, max=30))
   phone_landline = fields.String(required=False, validate=Length(min=10, max=20))
   phone_mobile = fields.String(required=False, validate=Length(min=10, max=20))
-  email_contact = fields.String(required=False, validate=Length(min=10, max=50))
-  email_invoice = fields.String(required=False, validate=Length(min=10, max=50))
+  email_contact = fields.Email(required=False, validate=Length(min=10, max=50))
+  email_invoice = fields.Email(required=False, validate=Length(min=10, max=50))
   bank_iban = fields.String(required=False, validate=Length(min=20, max=30))
   payment_days = fields.Integer(required=False, validate=Length(min=1, max=2))
 
@@ -113,7 +113,7 @@ class InvoiceSchema(Schema):
   reminded_second = fields.Boolean(required=False)
   reminded_third = fields.Boolean(required=False)
   payed = fields.Boolean(required=False)
-  pdf = fields.String(required=False, validate=Length(min=5, max=255))
+  pdf = fields.URL(required=False, validate=Length(min=5, max=255))
 
   class Meta:
     ordered = True
