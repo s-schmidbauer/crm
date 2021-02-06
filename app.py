@@ -90,10 +90,9 @@ def add_currency():
       cs = currency_schema.dump(data)
       currencies = mongo.db.currencies
       currencies.insert_one(cs)
-      return currency_schema.dump(data)
+      return {"currency": currency_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding currency failed"}
-
 
 @app.route("/time_registration", methods=['POST'])
 def add_time_registration():
@@ -102,7 +101,7 @@ def add_time_registration():
       tr = timereg_schema.dump(data)
       timeregistrations = mongo.db.timeregistrations
       timeregistrations.insert_one(tr)
-      return timereg_schema.dump(data)
+      return {"time_registration": timereg_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding time registration failed"}
 
@@ -113,7 +112,7 @@ def add_rate():
       rs = rate_schema.dump(data)
       rates = mongo.db.rates
       rates.insert(rs)
-      return rate_schema.dump(data)
+      return {"rate": rate_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding rate failed"}
 
@@ -124,7 +123,7 @@ def add_payment_method():
       ps = payment_schema.dump(data)
       paymentmethods = mongo.db.paymentmethods
       paymentmethods.insert(ps)
-      return payment_schema.dump(data)
+      return {"payment_method": payment_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding payment method failed"}
 
@@ -135,7 +134,7 @@ def add_contact():
       cs = contact_schema.dump(data)
       contacts = mongo.db.contacts
       contacts.insert(cs)
-      return contact_schema.dump(data)
+      return {"contact": contact_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding contact failed"}
 
@@ -146,7 +145,7 @@ def add_spending():
       ss = spending_schema.dump(data)
       spendings = mongo.db.spendings
       spendings.insert(ss)
-      return spending_schema.dump(data)
+      return {"spending": spending_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding spending failed"}
 
@@ -157,7 +156,7 @@ def add_invoice():
       inv = invoice_schema.dump(data)
       invoices = mongo.db.invoices
       invoices.insert(inv)
-      return invoice_schema.dump(data)
+      return {"invoice": invoice_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding invoice failed"}
 
