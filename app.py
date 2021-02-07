@@ -50,48 +50,72 @@ def bad_request(e):
 # Detail Views
 @app.route("/currency/<string:symbol>", methods=['GET'])
 def get_currency(symbol):
-    currency = mongo.db.currencies.find_one_or_404({"symbol": symbol})
-    return {"currency": currency_schema.dump(currency)}
+    try:
+      currency = mongo.db.currencies.find_one_or_404({"symbol": symbol})
+      return {"currency": currency_schema.dump(currency)}
+    except Exception:
+      abort(400)
 
 @app.route("/time_registration/<int:id>", methods=['GET'])
 def get_time_registration(id):
-    time_registration = mongo.db.timeregistrations.find_one_or_404({"_id": ObjectId(id)})
-    return {"time_registration": timereg_schema.dump(time_registration)}
+    try:
+      time_registration = mongo.db.timeregistrations.find_one_or_404({"_id": ObjectId(id)})
+      return {"time_registration": timereg_schema.dump(time_registration)}
+    except Exception:
+      abort(400)
 
 @app.route("/rate/<string:name>", methods=['GET'])
 def get_rate(name):
-    rate = mongo.db.rates.find_one_or_404({"name": name })
-    return {"rate":rate_schema.dump(rate)}
+    try:
+      rate = mongo.db.rates.find_one_or_404({"name": name })
+      return {"rate":rate_schema.dump(rate)}
+    except Exception:
+      abort(400)
 
 @app.route("/payment_method/<string:name>", methods=['GET'])
 def get_payment_method(name):
-    payment_method = mongo.db.paymentmethods.find_one_or_404({"name": name })
-    return {"payment_method": payment_schema.dump(payment_method)}
+    try:
+      payment_method = mongo.db.paymentmethods.find_one_or_404({"name": name })
+      return {"payment_method": payment_schema.dump(payment_method)}
+    except Exception:
+      abort(400)
 
 @app.route("/contact/<string:name>", methods=['GET'])
 def get_contact(name):
-    contact = mongo.db.contacts.find_one_or_404({"name": name })
-    return {"contact": contact_schema.dump(contact)}
+    try:
+      contact = mongo.db.contacts.find_one_or_404({"name": name })
+      return {"contact": contact_schema.dump(contact)}
+    except Exception:
+      abort(400)
 
 @app.route("/spending/<string:name>", methods=['GET'])
 def get_spending(name):
-    spending = mongo.db.spendings.find_one_or_404({"name": name })
-    return {"spending": spending_schema.dump(spending)}
+    try:
+      spending = mongo.db.spendings.find_one_or_404({"name": name })
+      return {"spending": spending_schema.dump(spending)}
+    except Exception:
+      abort(400)
 
 @app.route("/invoice/<string:number>", methods=['GET'])
 def get_invoice(number):
-    invoice = mongo.db.invoices.find_one_or_404({"number": number })
-    return {"invoice":invoice_schema.dump(invoice)}
+    try:
+      invoice = mongo.db.invoices.find_one_or_404({"number": number })
+      return {"invoice":invoice_schema.dump(invoice)}
+    except Exception:
+      abort(400)
 
 # Extra functions
 
 # Returns the usd_conversion_rate of a currency
 @app.route("/usd_conversion_rate", methods=['POST'])
 def usd_conversion_rate():
-    sym = request.json["symbol"]
-    r = requests.get('https://api.exchangeratesapi.io/latest?base=' + sym )
-    j = r.json()
-    return {"usd_conversion_rate": json.dumps(j["rates"]["USD"]) }
+    try:
+      sym = request.json["symbol"]
+      r = requests.get('https://api.exchangeratesapi.io/latest?base=' + sym )
+      j = r.json()
+      return {"usd_conversion_rate": json.dumps(j["rates"]["USD"]) }
+    except Exception:
+      abort(400)
 
 # Add Views
 
@@ -105,6 +129,8 @@ def add_currency():
       return {"currency": currency_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding currency failed"}
+    except Exception:
+      abort(400)
 
 @app.route("/time_registration", methods=['POST'])
 def add_time_registration():
@@ -116,6 +142,8 @@ def add_time_registration():
       return {"time_registration": timereg_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding time registration failed"}
+    except Exception:
+      abort(400)
 
 @app.route("/rate", methods=['POST'])
 def add_rate():
@@ -127,6 +155,8 @@ def add_rate():
       return {"rate": rate_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding rate failed"}
+    except Exception:
+      abort(400)
 
 @app.route("/payment_method", methods=['POST'])
 def add_payment_method():
@@ -138,6 +168,8 @@ def add_payment_method():
       return {"payment_method": payment_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding payment method failed"}
+    except Exception:
+      abort(400)
 
 @app.route("/contact", methods=['POST'])
 def add_contact():
@@ -149,6 +181,8 @@ def add_contact():
       return {"contact": contact_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding contact failed"}
+    except Exception:
+      abort(400)
 
 @app.route("/spending", methods=['POST'])
 def add_spending():
@@ -160,6 +194,8 @@ def add_spending():
       return {"spending": spending_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding spending failed"}
+    except Exception:
+      abort(400)
 
 @app.route("/invoice", methods=['POST'])
 def add_invoice():
@@ -171,6 +207,8 @@ def add_invoice():
       return {"invoice": invoice_schema.dump(data)}
     except ValidationError:
       return {"message": "Adding invoice failed"}
+    except Exception:
+      abort(400)
 
 # Update Views
 # They validate the json input provided
@@ -182,6 +220,8 @@ def update_currency():
     sym = request.json["find"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   c = mongo.db.currencies.replace_one({ "symbol": sym }, request.json)
   return { "matched_count": c.matched_count }
 
@@ -191,6 +231,8 @@ def update_time_registration():
     errors = timereg_schema.validate(request.json)
     id = request.json["find"]
   except ValidationError:
+    abort(400)
+  except Exception:
     abort(400)
   tr = mongo.db.timeregistrations.replace_one({ "_id": ObjectId(id) }, request.json)
   return { "matched_count": tr.matched_count }
@@ -202,6 +244,8 @@ def update_rate():
     name = request.json["find"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   r = mongo.db.rates.replace_one({ "name": name }, request.json)
   return { "matched_count": r.matched_count }
 
@@ -211,6 +255,8 @@ def update_payment_method():
     errors = payment_schema.validate(request.json)
     name = request.json["find"]
   except ValidationError:
+    abort(400)
+  except Exception:
     abort(400)
   pm = mongo.db.paymentmethods.replace_one({ "name": name }, request.json)
   return { "matched_count": pm.matched_count }
@@ -222,6 +268,8 @@ def update_contact():
     name = request.json["find"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   c = mongo.db.contacts.replace_one({ "name": name }, request.json)
   return { "matched_count": c.matched_count }
 
@@ -232,6 +280,8 @@ def update_spending():
     name = request.json["find"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   s = mongo.db.contacts.replace_one({ "name": name }, request.json)
   return { "matched_count": s.matched_count }
 
@@ -241,6 +291,8 @@ def update_invoice():
     errors = invoice_schema.validate(request.json)
     number = request.json["find"]
   except ValidationError:
+    abort(400)
+  except Exception:
     abort(400)
   i = mongo.db.contacts.replace_one({ "number": number }, request.json)
   return { "matched_count": i.matched_count }
@@ -254,6 +306,8 @@ def delete_currency():
     sym = request.json["symbol"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   c = mongo.db.currencies.delete_one({ "symbol": sym })
   return { "deleted_count": c.deleted_count }
 
@@ -263,6 +317,8 @@ def delete_time_registration():
     errors = timereg_schema.validate(request.json)
     id = request.json["id"]
   except ValidationError:
+    abort(400)
+  except Exception:
     abort(400)
   tr = mongo.db.timeregistrations.delete_one({ "_id": ObjectId(id) })
   return { "deleted_count": tr.deleted_count }
@@ -274,6 +330,8 @@ def delete_rate():
     name = request.json["name"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   r = mongo.db.rates.delete_one({ "name": name })
   return { "deleted_count": r.deleted_count }
 
@@ -283,6 +341,8 @@ def delete_payment_method():
     errors = payment_schema.validate(request.json)
     name = request.json["name"]
   except ValidationError:
+    abort(400)
+  except Exception:
     abort(400)
   pm = mongo.db.paymentmethods.delete_one({ "name": name })
   return { "deleted_count": pm.deleted_count }
@@ -294,6 +354,8 @@ def delete_contact():
     name = request.json["name"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   c = mongo.db.contacts.replace_one({ "name": name })
   return { "matched_count": c.matched_count }
 
@@ -303,6 +365,8 @@ def delete_spending():
     errors = spending_schema.validate(request.json)
     name = request.json["name"]
   except ValidationError:
+    abort(400)
+  except Exception:
     abort(400)
   s = mongo.db.contacts.replace_one({ "name": name })
   return { "matched_count": s.matched_count }
@@ -314,6 +378,8 @@ def delete_invoice():
     number = request.json["number"]
   except ValidationError:
     abort(400)
+  except Exception:
+    abort(400)
   i = mongo.db.contacts.replace_one({ "number": number })
   return { "matched_count": i.matched_count }
 
@@ -324,53 +390,53 @@ def currencies():
     try:
       currencies = mongo.db.currencies.find()
       return {"currencies": currencies_schema.dump(currencies)}
-    except Error:
-      return {"message": "An error occured"}
+    except Exception:
+      abort(400)
 
 @app.route("/rates")
 def rates():
     try:
       rates = mongo.db.rates.find()
       return {"rates": rates_schema.dump(rates)}
-    except Error:
-      return {"message": "An error occured"}
+    except Exception:
+      abort(400)
 
 @app.route("/time_registrations")
 def time_registrations():
     try:
       timeregistrations = mongo.db.timeregistrations.find()
       return {"time_registrations": timeregs_schema.dump(timeregistrations)}
-    except Error:
-      return {"message": "An error occured"}
+    except Exception:
+      abort(400)
 
 @app.route("/payment_methods")
 def payment_methods():
     try:
       paymentmethods = mongo.db.paymentmethods.find()
       return {"payment_methods": payments_schema.dump(paymentmethods)}
-    except Error:
-      return {"message": "An error occured"}
+    except Exception:
+      abort(400)
 
 @app.route("/spendings")
 def spendings():
     try:
       spendings = mongo.db.spendings.find()
       return {"spendings": spendings_schema.dump(spendings)}
-    except Error:
-      return {"message": "An error occured"}
+    except Exception:
+      abort(400)
 
 @app.route("/contacts")
 def contacts():
     try:
       contacts = mongo.db.contacts.find()
       return {"contacts": contacts_schema.dump(contacts)}
-    except Error:
-      return {"message": "An error occured"}
+    except Exception:
+      abort(400)
 
 @app.route("/invoices")
 def invoices():
     try:
       invoices = mongo.db.invoices.find()
       return {"invoices": invoices_schema.dump(invoices)}
-    except Error:
-      return {"message": "An error occured"}
+    except Exception:
+      abort(400)

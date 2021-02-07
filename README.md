@@ -2,6 +2,10 @@
 
 # Test
 ## Add
+Get the USD conversion rate for a currency
+```
+curl --header "Content-Type: application/json" -X POST -d '{ "symbol": "CZK" }' http://127.0.0.1:5000/usd_conversion_rate
+```
 ```
 curl --header "Content-Type: application/json" -X POST -d '{ "symbol": "USD", "usd_conversion_rate": "1.0" }' http://127.0.0.1:5000/currency
 
