@@ -2,3 +2,4 @@ Flask==1.1
 Flask-PyMongo
 dnspython
 marshmallow
+flask-marshmallow
