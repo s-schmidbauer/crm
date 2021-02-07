@@ -1,5 +1,6 @@
 import sys
 import json
+import requests
 from flask import Flask, request, redirect, url_for, jsonify, abort
 from marshmallow import ValidationError
 from flask_marshmallow import Marshmallow
@@ -30,13 +31,13 @@ from schemas import currency_schema, \
                     invoices_schema
 
 # Required vars for adding
-eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
-normal =        { "name": "Corp", "price": "34.0", "currency": eur }
-kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": normal }
-visa =          { "name": "Visa" }
-sentia =        { "name": "Fred Flintstone", "website": "https://www.google.com" }
-spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
-invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
+# eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
+# normal =        { "name": "Corp", "price": "34.0", "currency": eur }
+# kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": normal }
+# visa =          { "name": "Visa" }
+# sentia =        { "name": "Fred Flintstone", "website": "https://www.google.com" }
+# spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
+# invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
 
 @app.errorhandler(404)
 def resource_not_found(e):
@@ -82,7 +83,18 @@ def get_invoice(number):
     invoice = mongo.db.invoices.find_one_or_404({"number": number })
     return {"invoice":invoice_schema.dump(invoice)}
 
+# Extra functions
+
+# Returns the usd_conversion_rate of a currency
+@app.route("/usd_conversion_rate", methods=['POST'])
+def usd_conversion_rate():
+    sym = request.json["symbol"]
+    r = requests.get('https://api.exchangeratesapi.io/latest?base=' + sym )
+    j = r.json()
+    return {"usd_conversion_rate": json.dumps(j["rates"]["USD"]) }
+
 # Add Views
+
 @app.route("/currency", methods=['POST'])
 def add_currency():
     try:
