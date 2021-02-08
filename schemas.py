@@ -123,18 +123,6 @@ class InvoiceSchema(Schema):
   #     'collection': ma.URLFor('invoices'),
   #   })
 
-class TimeRegistrationSchema(Schema):
-  start_date = fields.String(required=True, validate=Length(min=6, max=10))
-  end_date = fields.String(required=True, validate=Length(min=6, max=10))
-  rate = fields.Nested(RateSchema, required=True)
-
-  class Meta:
-    ordered = True
-
-  # _links = ma.Hyperlinks({
-  #     'self': ma.URLFor('get_time_registration', values=dict(id='<id>')),
-  #     'collection': ma.URLFor('invoices'),
-  #   })
 
 # Schemas used by Marshmallow
 currency_schema = CurrencySchema()
