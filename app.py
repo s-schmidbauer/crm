@@ -206,7 +206,7 @@ def get_time_reg_total():
         curr = time["rate"]["currency"]["symbol"]
         total += float(hours) * float(price)
         total_hours += float(hours)
-      return {"calculated_total": str(total), "hours_total": str(total_hours), "currency": curr, "times": str(times)}
+      return {"calculated_total": str(total), "hours_total": str(total_hours), "currency": curr, "times_count": str(times)}
     return {"message": "No times found in time registration"}, 400
   except Exception:
     abort(400)
