@@ -205,7 +205,7 @@ def get_time_reg_total():
         hours = time["hours"]
         price = time["rate"]["price"]
         sym = time["rate"]["currency"]["symbol"]
-        subtotal.append( {"subtotal": float(hours) * float(price), "price":float(price), "symbol": sym } )
+        subtotal.append( {"sub_total": float(hours) * float(price), "price":float(price), "symbol": sym, "hours": float(hours) } )
         total += float(hours) * float(price)
         total_hours += float(hours)
       return {"calculated_total": str(total), "hours_total": str(total_hours), "symbol": sym, "times_count": str(times), "sub_totals": subtotal }
