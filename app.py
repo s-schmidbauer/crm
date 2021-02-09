@@ -33,9 +33,10 @@ from schemas import currency_schema, \
                     invoices_schema
 
 # Required vars for adding
-# eur =           { "symbol": "EUR", "usd_conversion_rate": "0.9" }
+# eur =           { "symbol": "EUR", "usd_conversion_rate": "1.1" }
 # normal =        { "name": "Corp", "price": "34.0", "currency": eur }
-# kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "rate": normal }
+# kw5_100 =       { "name": "kw5-100", "hours": "30", "rate": normal }
+# kw_5 =          { "start_date": "01-02-2021", "end_date": "07-02-2021", "times": kw5_100 }
 # visa =          { "name": "Visa" }
 # sentia =        { "name": "Fred Flintstone", "website": "https://www.google.com" }
 # spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
