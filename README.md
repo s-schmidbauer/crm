@@ -58,7 +58,7 @@ curl --header "Content-Type: application/json" -X POST -d '{ "currency": { "symb
 
 Add time of a certain rate
 ```
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-kw5-150", "hours": "2.0" , "rate": { "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "43.46" } }' http://127.0.0.1:5000/time
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-kw5-150", "hours": "2.0" , "rate": { "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00" } }' http://127.0.0.1:5000/time
 ```
 
 Add spending and payment method
