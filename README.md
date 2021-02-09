@@ -3,6 +3,7 @@
 Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entities.
 ```
 /currency
+/time
 /rate
 /spending
 /time_registration
@@ -14,6 +15,7 @@ Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entiti
 List (`GET`) entities
 ```
 /currencies
+/times
 /rates
 /spendings
 /time_registrations
@@ -53,7 +55,7 @@ curl --header "Content-Type: application/json" -X POST -d '{ "symbol": "USD", "u
 
 Add a new rate
 ```
-curl --header "Content-Type: application/json" -X POST -d '{ "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "43.46" }' http://127.0.0.1:5000/rate
+curl --header "Content-Type: application/json" -X POST -d '{ "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00" }' http://127.0.0.1:5000/rate
 ```
 
 Add time of a certain rate
