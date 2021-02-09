@@ -204,11 +204,11 @@ def get_time_reg_total():
         times = times + 1
         hours = time["hours"]
         price = time["rate"]["price"]
-        curr = time["rate"]["currency"]["symbol"]
-        subtotal.append( {"subtotal": float(hours) * float(price), "price":float(price), "currency": curr } )
+        sym = time["rate"]["currency"]["symbol"]
+        subtotal.append( {"subtotal": float(hours) * float(price), "price":float(price), "symbol": sym } )
         total += float(hours) * float(price)
         total_hours += float(hours)
-      return {"calculated_total": str(total), "hours_total": str(total_hours), "currency": curr, "times_count": str(times), "subtotals": subtotal }
+      return {"calculated_total": str(total), "hours_total": str(total_hours), "symbol": sym, "times_count": str(times), "sub_totals": subtotal }
     return {"message": "No times found in time registration"}, 400
   except Exception:
     abort(400)
