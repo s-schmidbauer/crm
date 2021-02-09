@@ -198,12 +198,15 @@ def get_time_reg_total():
     if result["times"]:
       total = 0
       total_hours = 0
+      times = 0
       for time in result["times"]:
+        times = times + 1
         hours = time["hours"]
         price = time["rate"]["price"]
+        curr = time["rate"]["currency"]["symbol"]
         total += float(hours) * float(price)
         total_hours += float(hours)
-      return {"calculated_total": str(total), "hours_total": str(total_hours)}
+      return {"calculated_total": str(total), "hours_total": str(total_hours), "currency": curr, "times_count": str(times)}
     return {"message": "No times found in time registration"}, 400
   except Exception:
     abort(400)
