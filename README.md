@@ -77,11 +77,14 @@ curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-20
 
 Get the total of a time registration by posting a time reg to that endpoint
 ```
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-2021", "start_date": "01-02-2021", "end_date": "31-02-2021", "times": [ {"name": "sen-kw5-100", "hours": "38.0", "rate": {"name": "sen-100", "price": "28.97", "currency": {"symbol": "EUR", "usd_conversion_rate": "1.1983" } } } ] }' http://127.0.0.1:5000/get_time_reg_total
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-2021", "start_date": "01-02-2021", "end_date": "31-02-2021", "times": [ {"name": "sen-kw5-100", "hours": "38.0", "rate": {"name": "sen-100", "price": "28.97", "currency": {"symbol": "EUR", "usd_conversion_rate": "1.1983" } } }, {"name": "sen-kw5-150", "hours": "2.0", "rate": {"name": "sen-150", "price": "43.46", "currency": {"symbol": "EUR", "usd_conversion_rate": "1.1983" } } } ] }' http://127.0.0.1:5000/get_time_reg_total
 {
   "calculated_total": "1187.78",
-  "hours_total": "40.0"
+  "currency": "EUR",
+  "hours_total": "40.0",
+  "times": "2"
 }
+
 ```
 
 Add spedings and time registrations to invoices
