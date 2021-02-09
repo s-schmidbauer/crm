@@ -56,10 +56,10 @@ def get_currency(symbol):
     except Exception:
       abort(400)
 
-@app.route("/time_registration/<int:id>", methods=['GET'])
-def get_time_registration(id):
+@app.route("/time_registration/<string:name>", methods=['GET'])
+def get_time_registration(name):
     try:
-      time_registration = mongo.db.timeregistrations.find_one_or_404({"_id": ObjectId(id)})
+      time_registration = mongo.db.timeregistrations.find_one_or_404({"name": name })
       return {"time_registration": timereg_schema.dump(time_registration)}
     except Exception:
       abort(400)
@@ -123,12 +123,13 @@ def usd_conversion_rate():
 def add_currency():
     try:
       data = request.json
+      errors = currency_schema.validate(data)
+      if errors:
+          return {"message": "Validation failed"}, 400
       cs = currency_schema.dump(data)
       currencies = mongo.db.currencies
       currencies.insert_one(cs)
       return {"currency": currency_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding currency failed"}
     except Exception:
       abort(400)
 
@@ -136,12 +137,13 @@ def add_currency():
 def add_time_registration():
     try:
       data = request.json
+      errors = timereg_schema.validate(data)
+      if errors:
+          return {"message": "Validation failed"}, 400
       tr = timereg_schema.dump(data)
       timeregistrations = mongo.db.timeregistrations
       timeregistrations.insert_one(tr)
       return {"time_registration": timereg_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding time registration failed"}
     except Exception:
       abort(400)
 
@@ -149,12 +151,13 @@ def add_time_registration():
 def add_rate():
     try:
       data = request.json
+      errors = rate_schema.validate(data)
+      if errors:
+          return {"message": "Validation failed"}, 400
       rs = rate_schema.dump(data)
       rates = mongo.db.rates
       rates.insert(rs)
       return {"rate": rate_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding rate failed"}
     except Exception:
       abort(400)
 
@@ -162,12 +165,13 @@ def add_rate():
 def add_payment_method():
     try:
       data = request.json
+      errors = payment_schema.validate(data)
+      if errors:
+          return {"message": "Validation failed"}, 400
       ps = payment_schema.dump(data)
       paymentmethods = mongo.db.paymentmethods
       paymentmethods.insert(ps)
       return {"payment_method": payment_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding payment method failed"}
     except Exception:
       abort(400)
 
@@ -175,12 +179,13 @@ def add_payment_method():
 def add_contact():
     try:
       data = request.json
+      errors = contact_schema.validate(data)
+      if errors:
+          return {"message": "Validation failed"}, 400
       cs = contact_schema.dump(data)
       contacts = mongo.db.contacts
       contacts.insert(cs)
       return {"contact": contact_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding contact failed"}
     except Exception:
       abort(400)
 
@@ -188,12 +193,13 @@ def add_contact():
 def add_spending():
     try:
       data = request.json
+      errors = spending_schema.validate(data)
+      if errors:
+          return {"message": "Validation failed"}, 400
       ss = spending_schema.dump(data)
       spendings = mongo.db.spendings
       spendings.insert(ss)
       return {"spending": spending_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding spending failed"}
     except Exception:
       abort(400)
 
@@ -201,12 +207,13 @@ def add_spending():
 def add_invoice():
     try:
       data = request.json
+      errors = invoice_schema.validate(data)
+      if errors:
+          return {"message": "Validation failed"}, 400
       inv = invoice_schema.dump(data)
       invoices = mongo.db.invoices
       invoices.insert(inv)
       return {"invoice": invoice_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding invoice failed"}
     except Exception:
       abort(400)
 
@@ -229,12 +236,12 @@ def update_currency():
 def update_time_registration():
   try:
     errors = timereg_schema.validate(request.json)
-    id = request.json["find"]
+    name = request.json["find"]
   except ValidationError:
     abort(400)
   except Exception:
     abort(400)
-  tr = mongo.db.timeregistrations.replace_one({ "_id": ObjectId(id) }, request.json)
+  tr = mongo.db.timeregistrations.replace_one({ "name": name }, request.json)
   return { "matched_count": tr.matched_count }
 
 @app.route("/rate", methods=['PUT'])
@@ -315,12 +322,12 @@ def delete_currency():
 def delete_time_registration():
   try:
     errors = timereg_schema.validate(request.json)
-    id = request.json["id"]
+    name = request.json["name"]
   except ValidationError:
     abort(400)
   except Exception:
     abort(400)
-  tr = mongo.db.timeregistrations.delete_one({ "_id": ObjectId(id) })
+  tr = mongo.db.timeregistrations.delete_one({ "name": name })
   return { "deleted_count": tr.deleted_count }
 
 @app.route("/rate", methods=['DELETE'])
