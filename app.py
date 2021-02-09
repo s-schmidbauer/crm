@@ -467,7 +467,7 @@ def delete_invoice():
 # List Views
 @app.route("/")
 def index():
-    return {"message": "Welcome to CRM"}
+    return {"message": "Welcome to CRM", "author": "Stefan Schmidbauer", "www": "https://github.com/s-schmidbauer/crm"}
 
 @app.route("/currencies")
 def currencies():
