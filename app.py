@@ -19,6 +19,8 @@ from schemas import currency_schema, \
                     currencies_schema, \
                     rate_schema, \
                     rates_schema, \
+                    time_schema, \
+                    times_schema, \
                     timereg_schema, \
                     timeregs_schema, \
                     payment_schema, \
@@ -51,15 +53,23 @@ def bad_request(e):
 @app.route("/currency/<string:symbol>", methods=['GET'])
 def get_currency(symbol):
     try:
-      currency = mongo.db.currencies.find_one_or_404({"symbol": symbol})
+      currency = mongo.db.currencies.find_one_or_404({"symbol": symbol })
       return {"currency": currency_schema.dump(currency)}
     except Exception:
       abort(400)
 
-@app.route("/time_registration/<int:id>", methods=['GET'])
-def get_time_registration(id):
+@app.route("/time/<string:name>", methods=['GET'])
+def get_time(symbol):
     try:
-      time_registration = mongo.db.timeregistrations.find_one_or_404({"_id": ObjectId(id)})
+      time = mongo.db.times.find_one_or_404({"name": name })
+      return {"time": time_schema.dump(time)}
+    except Exception:
+      abort(400)
+
+@app.route("/time_registration/<string:name>", methods=['GET'])
+def get_time_registration(name):
+    try:
+      time_registration = mongo.db.timeregistrations.find_one_or_404({"name": name })
       return {"time_registration": timereg_schema.dump(time_registration)}
     except Exception:
       abort(400)
@@ -121,94 +131,139 @@ def usd_conversion_rate():
 
 @app.route("/currency", methods=['POST'])
 def add_currency():
-    try:
-      data = request.json
-      cs = currency_schema.dump(data)
-      currencies = mongo.db.currencies
+  try:
+    data = request.json
+    errors = currency_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    cs = currency_schema.dump(data)
+    currencies = mongo.db.currencies
+    result = currencies.find_one(cs)
+    if not result:
       currencies.insert_one(cs)
       return {"currency": currency_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding currency failed"}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
+
+@app.route("/time", methods=['POST'])
+def add_time():
+  try:
+    data = request.json
+    errors = time_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ts = time_schema.dump(data)
+    times = mongo.db.times
+    result = times.find_one(ts)
+    if not result:
+      times.insert_one(ts)
+      return {"times": time_schema.dump(data)}
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/time_registration", methods=['POST'])
 def add_time_registration():
-    try:
-      data = request.json
-      tr = timereg_schema.dump(data)
-      timeregistrations = mongo.db.timeregistrations
+  try:
+    data = request.json
+    errors = timereg_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    tr = timereg_schema.dump(data)
+    timeregistrations = mongo.db.timeregistrations
+    result = timeregistrations.find_one(tr)
+    if not result:
       timeregistrations.insert_one(tr)
       return {"time_registration": timereg_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding time registration failed"}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/rate", methods=['POST'])
 def add_rate():
-    try:
-      data = request.json
-      rs = rate_schema.dump(data)
-      rates = mongo.db.rates
-      rates.insert(rs)
+  try:
+    data = request.json
+    errors = rate_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    rs = rate_schema.dump(data)
+    rates = mongo.db.rates
+    result = rates.find_one(rs)
+    if not result:
+      rates.insert_one(rs)
       return {"rate": rate_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding rate failed"}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/payment_method", methods=['POST'])
 def add_payment_method():
-    try:
-      data = request.json
-      ps = payment_schema.dump(data)
-      paymentmethods = mongo.db.paymentmethods
-      paymentmethods.insert(ps)
+  try:
+    data = request.json
+    errors = payment_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ps = payment_schema.dump(data)
+    paymentmethods = mongo.db.paymentmethods
+    result = rates.find_one(ps)
+    if not result:
+      paymentmethods.insert_one(ps)
       return {"payment_method": payment_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding payment method failed"}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/contact", methods=['POST'])
 def add_contact():
-    try:
-      data = request.json
-      cs = contact_schema.dump(data)
-      contacts = mongo.db.contacts
-      contacts.insert(cs)
+  try:
+    data = request.json
+    errors = contact_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    cs = contact_schema.dump(data)
+    contacts = mongo.db.contacts
+    result = contacts.find_one(cs)
+    if not result:
+      contacts.insert_one(cs)
       return {"contact": contact_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding contact failed"}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/spending", methods=['POST'])
 def add_spending():
-    try:
-      data = request.json
-      ss = spending_schema.dump(data)
-      spendings = mongo.db.spendings
-      spendings.insert(ss)
+  try:
+    data = request.json
+    errors = spending_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ss = spending_schema.dump(data)
+    spendings = mongo.db.spendings
+    result = spendings.find_one(ss)
+    if not result:
+      spendings.insert_one(ss)
       return {"spending": spending_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding spending failed"}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/invoice", methods=['POST'])
 def add_invoice():
-    try:
-      data = request.json
-      inv = invoice_schema.dump(data)
-      invoices = mongo.db.invoices
-      invoices.insert(inv)
+  try:
+    data = request.json
+    errors = invoice_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ivs = invoice_schema.dump(data)
+    invoices = mongo.db.invices
+    result = invoices.find_one(ivs)
+    if not result:
+      spendings.insert_one(ivs)
       return {"invoice": invoice_schema.dump(data)}
-    except ValidationError:
-      return {"message": "Adding invoice failed"}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 # Update Views
 # They validate the json input provided
@@ -225,16 +280,28 @@ def update_currency():
   c = mongo.db.currencies.replace_one({ "symbol": sym }, request.json)
   return { "matched_count": c.matched_count }
 
-@app.route("/time_registration", methods=['PUT'])
-def update_time_registration():
+@app.route("/time", methods=['PUT'])
+def update_time():
   try:
-    errors = timereg_schema.validate(request.json)
-    id = request.json["find"]
+    errors = time_schema.validate(request.json)
+    name = request.json["find"]
   except ValidationError:
     abort(400)
   except Exception:
     abort(400)
-  tr = mongo.db.timeregistrations.replace_one({ "_id": ObjectId(id) }, request.json)
+  ts = mongo.db.times.replace_one({ "name": name }, request.json)
+  return { "matched_count": ts.matched_count }
+
+@app.route("/time_registration", methods=['PUT'])
+def update_time_registration():
+  try:
+    errors = timereg_schema.validate(request.json)
+    name = request.json["find"]
+  except ValidationError:
+    abort(400)
+  except Exception:
+    abort(400)
+  tr = mongo.db.timeregistrations.replace_one({ "name": name }, request.json)
   return { "matched_count": tr.matched_count }
 
 @app.route("/rate", methods=['PUT'])
@@ -311,16 +378,28 @@ def delete_currency():
   c = mongo.db.currencies.delete_one({ "symbol": sym })
   return { "deleted_count": c.deleted_count }
 
-@app.route("/time_registration", methods=['DELETE'])
-def delete_time_registration():
+@app.route("/times", methods=['DELETE'])
+def delete_time():
   try:
-    errors = timereg_schema.validate(request.json)
-    id = request.json["id"]
+    errors = time_schema.validate(request.json)
+    name = request.json["name"]
   except ValidationError:
     abort(400)
   except Exception:
     abort(400)
-  tr = mongo.db.timeregistrations.delete_one({ "_id": ObjectId(id) })
+  ts = mongo.db.times.delete_one({ "name": name })
+  return { "deleted_count": ts.deleted_count }
+
+@app.route("/time_registration", methods=['DELETE'])
+def delete_time_registration():
+  try:
+    errors = timereg_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  except Exception:
+    abort(400)
+  tr = mongo.db.timeregistrations.delete_one({ "name": name })
   return { "deleted_count": tr.deleted_count }
 
 @app.route("/rate", methods=['DELETE'])
@@ -398,6 +477,14 @@ def rates():
     try:
       rates = mongo.db.rates.find()
       return {"rates": rates_schema.dump(rates)}
+    except Exception:
+      abort(400)
+
+@app.route("/times")
+def times():
+    try:
+      times = mongo.db.times.find()
+      return {"times": times_schema.dump(times)}
     except Exception:
       abort(400)
 

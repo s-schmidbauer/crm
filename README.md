@@ -3,6 +3,7 @@
 Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entities.
 ```
 /currency
+/time
 /rate
 /spending
 /time_registration
@@ -14,6 +15,7 @@ Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entiti
 List (`GET`) entities
 ```
 /currencies
+/times
 /rates
 /spendings
 /time_registrations
@@ -46,17 +48,29 @@ Get the USD conversion rate for a currency
 ```
 curl --header "Content-Type: application/json" -X POST -d '{ "symbol": "CZK" }' http://127.0.0.1:5000/usd_conversion_rate
 ```
-Add resources
+Add currency
 ```
 curl --header "Content-Type: application/json" -X POST -d '{ "symbol": "USD", "usd_conversion_rate": "1.0" }' http://127.0.0.1:5000/currency
+```
 
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "low", "price": "9.99" , "currency": { "symbol": "USD", "usd_conversion_rate": "1.0" } }' http://127.0.0.1:5000/rate
+Add a new rate
+```
+curl --header "Content-Type: application/json" -X POST -d '{ "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00" }' http://127.0.0.1:5000/rate
+```
 
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "coke", "": "1.00", "payment_method": { "name": "EC" } }' http://127.0.0.1:5000/spending
+Add time of a certain rate
+```
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-kw5-150", "hours": "2.0" , "rate": { "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00" } }' http://127.0.0.1:5000/time
+```
 
+Add spending and payment method
+```
 curl --header "Content-Type: application/json" -X POST -d '{ "name": "EC" }' http://127.0.0.1:5000/payment_method
 
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "coke", "": "1.00", "payment_method": { "name": "EC" } }' http://127.0.0.1:5000/spending
 ```
+
+Add spedings and time registrations to invoices
 
 ## List
 ```

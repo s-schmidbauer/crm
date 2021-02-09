@@ -1,11 +1,13 @@
 from marshmallow import Schema, fields, ValidationError
-from marshmallow.validate import Length
+from marshmallow.validate import Length, NoneOf
 from flask_marshmallow import Marshmallow
 
 from app import app, ma
 
+bad_choices = ["", " "]
+
 class CurrencySchema(Schema):
-  symbol = fields.String(required=True, unique=True, validate=Length(min=1, max=3))
+  symbol = fields.String(required=True, unique=True, validate=[ Length(min=1, max=3), NoneOf(bad_choices)] )
   usd_conversion_rate = fields.Float(required=True)
 
   # def get_usd_conversion_rate(self, obj):
@@ -20,7 +22,7 @@ class CurrencySchema(Schema):
   #   })
 
 class RateSchema(Schema):
-  name = fields.String(required=True, unique=True, validate=Length(min=1, max=20))
+  name = fields.String(required=True, unique=True, validate=[ Length(min=1, max=20), NoneOf(bad_choices)] )
   price = fields.Float(required=True)
   currency = fields.Nested(CurrencySchema)
 
@@ -32,10 +34,16 @@ class RateSchema(Schema):
   #     'collection': ma.URLFor('rates'),
   #   })
 
+class TimeSchema(Schema):
+  name = fields.String(required=True, unique=True, validate=[ NoneOf(bad_choices)] )
+  hours = fields.Float(required=True)
+  rate = fields.Nested(RateSchema, required=True)
+
 class TimeRegistrationSchema(Schema):
+  name = fields.String(required=True, unique=True, validate=[ NoneOf(bad_choices)] )
   start_date = fields.String(required=True, validate=Length(min=6, max=10))
   end_date = fields.String(required=True, validate=Length(min=6, max=10))
-  rate = fields.Nested(RateSchema, required=True)
+  times = fields.Nested(TimeSchema, required=True, many=True)
 
   class Meta:
     ordered = True
@@ -46,7 +54,7 @@ class TimeRegistrationSchema(Schema):
   #   })
 
 class PaymentMethodSchema(Schema):
-  name = fields.String(required=True, unique=True, validate=Length(min=3, max=20))
+  name = fields.String(required=True, unique=True, validate=[ Length(min=3, max=20), NoneOf(bad_choices)] )
 
   class Meta:
     ordered = True
@@ -57,7 +65,7 @@ class PaymentMethodSchema(Schema):
   #   })
 
 class SpendingSchema(Schema):
-  name = fields.String(required=True, validate=Length(min=3, max=50))
+  name = fields.String(required=True, validate=[ Length(min=3, max=50), NoneOf(bad_choices)] )
   amount = fields.String(required=False, validate=Length(min=3, max=10))
   payment_method = fields.Nested(PaymentMethodSchema, required=False)
   reference = fields.String(required=False, validate=Length(min=3, max=20))
@@ -71,9 +79,9 @@ class SpendingSchema(Schema):
   #   })
 
 class ContactSchema(Schema):
+  name = fields.String(required=True, validate=[ Length(min=3, max=30), NoneOf(bad_choices)] )
   title = fields.String(required=False, validate=Length(min=2, max=10))
   job_title = fields.String(required=False, validate=Length(max=20))
-  name = fields.String(required=True, validate=Length(min=3, max=30))
   company = fields.String(required=False, validate=Length(min=3, max=20))
   description = fields.String(required=False, validate=Length(min=3, max=20))
   company_gov_id = fields.String(required=False, validate=Length(min=3, max=20))
@@ -103,7 +111,7 @@ class ContactSchema(Schema):
   #   })
 
 class InvoiceSchema(Schema):
-  number = fields.String(required=True, unique=True, validate=Length(min=1, max=20))
+  number = fields.String(required=True, unique=True, validate=[ Length(min=1, max=20), NoneOf(bad_choices)] )
   customer = fields.Nested(ContactSchema, required=True)
   time_registrations = fields.Nested(TimeRegistrationSchema, required=False)
   spendings = fields.Nested(SpendingSchema, required=False)
@@ -127,6 +135,8 @@ class InvoiceSchema(Schema):
 # Schemas used by Marshmallow
 currency_schema = CurrencySchema()
 currencies_schema = CurrencySchema(many=True)
+time_schema = TimeSchema()
+times_schema = TimeSchema(many=True)
 rate_schema = RateSchema()
 rates_schema = RateSchema(many=True)
 timereg_schema = TimeRegistrationSchema()
