@@ -40,7 +40,7 @@ from schemas import currency_schema, \
 # visa =          { "name": "Visa" }
 # sentia =        { "name": "Fred Flintstone", "website": "https://www.google.com" }
 # spending =      { "name": "Vodka", "amount": "34.99", "payment_method": visa }
-# invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registrations": kw_5 }
+# invoice =       { "number": "010014", "customer": sentia, "spendings": spending, "time_registration": kw_5 }
 
 @app.errorhandler(404)
 def resource_not_found(e):
