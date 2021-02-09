@@ -70,6 +70,11 @@ curl --header "Content-Type: application/json" -X POST -d '{ "name": "EC" }' htt
 curl --header "Content-Type: application/json" -X POST -d '{ "name": "coke", "": "1.00", "payment_method": { "name": "EC" } }' http://127.0.0.1:5000/spending
 ```
 
+Add a list of times to a new time registration
+```
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-2021", "start_date": "01-02-2021", "end_date": "31-02-2021", "times": [ {"name": "sen-kw5-100", "hours": "38.0", "rate": {"name": "sen-100", "price": "28.97", "currency": {"symbol": "EUR", "usd_conversion_rate": "1.1983" } } } ] }' http://127.0.0.1:5000/time_registration
+```
+
 Add spedings and time registrations to invoices
 
 ## List
