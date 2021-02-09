@@ -121,101 +121,122 @@ def usd_conversion_rate():
 
 @app.route("/currency", methods=['POST'])
 def add_currency():
-    try:
-      data = request.json
-      errors = currency_schema.validate(data)
-      if errors:
-          return {"message": "Validation failed"}, 400
-      cs = currency_schema.dump(data)
-      currencies = mongo.db.currencies
+  try:
+    data = request.json
+    errors = currency_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    cs = currency_schema.dump(data)
+    currencies = mongo.db.currencies
+    result = currencies.find_one(cs)
+    if not result:
       currencies.insert_one(cs)
       return {"currency": currency_schema.dump(data)}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/time_registration", methods=['POST'])
 def add_time_registration():
-    try:
-      data = request.json
-      errors = timereg_schema.validate(data)
-      if errors:
-          return {"message": "Validation failed"}, 400
-      tr = timereg_schema.dump(data)
-      timeregistrations = mongo.db.timeregistrations
+  try:
+    data = request.json
+    errors = timereg_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    tr = timereg_schema.dump(data)
+    timeregistrations = mongo.db.timeregistrations
+    result = timeregistrations.find_one(tr)
+    if not result:
       timeregistrations.insert_one(tr)
       return {"time_registration": timereg_schema.dump(data)}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/rate", methods=['POST'])
 def add_rate():
-    try:
-      data = request.json
-      errors = rate_schema.validate(data)
-      if errors:
-          return {"message": "Validation failed"}, 400
-      rs = rate_schema.dump(data)
-      rates = mongo.db.rates
-      rates.insert(rs)
+  try:
+    data = request.json
+    errors = rate_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    rs = rate_schema.dump(data)
+    rates = mongo.db.rates
+    result = rates.find_one(rs)
+    if not result:
+      rates.insert_one(rs)
       return {"rate": rate_schema.dump(data)}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/payment_method", methods=['POST'])
 def add_payment_method():
-    try:
-      data = request.json
-      errors = payment_schema.validate(data)
-      if errors:
-          return {"message": "Validation failed"}, 400
-      ps = payment_schema.dump(data)
-      paymentmethods = mongo.db.paymentmethods
-      paymentmethods.insert(ps)
+  try:
+    data = request.json
+    errors = payment_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ps = payment_schema.dump(data)
+    paymentmethods = mongo.db.paymentmethods
+    result = rates.find_one(ps)
+    if not result:
+      paymentmethods.insert_one(ps)
       return {"payment_method": payment_schema.dump(data)}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/contact", methods=['POST'])
 def add_contact():
-    try:
-      data = request.json
-      errors = contact_schema.validate(data)
-      if errors:
-          return {"message": "Validation failed"}, 400
-      cs = contact_schema.dump(data)
-      contacts = mongo.db.contacts
-      contacts.insert(cs)
+  try:
+    data = request.json
+    errors = contact_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    cs = contact_schema.dump(data)
+    contacts = mongo.db.contacts
+    result = contacts.find_one(cs)
+    if not result:
+      contacts.insert_one(cs)
       return {"contact": contact_schema.dump(data)}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/spending", methods=['POST'])
 def add_spending():
-    try:
-      data = request.json
-      errors = spending_schema.validate(data)
-      if errors:
-          return {"message": "Validation failed"}, 400
-      ss = spending_schema.dump(data)
-      spendings = mongo.db.spendings
-      spendings.insert(ss)
+  try:
+    data = request.json
+    errors = spending_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ss = spending_schema.dump(data)
+    spendings = mongo.db.spendings
+    result = spendings.find_one(ss)
+    if not result:
+      spendings.insert_one(ss)
       return {"spending": spending_schema.dump(data)}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 @app.route("/invoice", methods=['POST'])
 def add_invoice():
-    try:
-      data = request.json
-      errors = invoice_schema.validate(data)
-      if errors:
-          return {"message": "Validation failed"}, 400
-      inv = invoice_schema.dump(data)
-      invoices = mongo.db.invoices
-      invoices.insert(inv)
+  try:
+    data = request.json
+    errors = invoice_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ivs = invoice_schema.dump(data)
+    invoices = mongo.db.invices
+    result = invoices.find_one(ivs)
+    if not result:
+      spendings.insert_one(ivs)
       return {"invoice": invoice_schema.dump(data)}
-    except Exception:
-      abort(400)
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
 
 # Update Views
 # They validate the json input provided
