@@ -19,6 +19,8 @@ from schemas import currency_schema, \
                     currencies_schema, \
                     rate_schema, \
                     rates_schema, \
+                    time_schema, \
+                    times_schema, \
                     timereg_schema, \
                     timeregs_schema, \
                     payment_schema, \
@@ -51,8 +53,16 @@ def bad_request(e):
 @app.route("/currency/<string:symbol>", methods=['GET'])
 def get_currency(symbol):
     try:
-      currency = mongo.db.currencies.find_one_or_404({"symbol": symbol})
+      currency = mongo.db.currencies.find_one_or_404({"symbol": symbol })
       return {"currency": currency_schema.dump(currency)}
+    except Exception:
+      abort(400)
+
+@app.route("/time/<string:name>", methods=['GET'])
+def get_time(symbol):
+    try:
+      time = mongo.db.times.find_one_or_404({"name": name })
+      return {"time": time_schema.dump(time)}
     except Exception:
       abort(400)
 
@@ -132,6 +142,23 @@ def add_currency():
     if not result:
       currencies.insert_one(cs)
       return {"currency": currency_schema.dump(data)}
+    return {"message": "Nothing changed"}, 201
+  except Exception:
+    abort(400)
+
+@app.route("/time", methods=['POST'])
+def add_time():
+  try:
+    data = request.json
+    errors = time_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+    ts = time_schema.dump(data)
+    times = mongo.db.times
+    result = times.find_one(ts)
+    if not result:
+      times.insert_one(ts)
+      return {"times": time_schema.dump(data)}
     return {"message": "Nothing changed"}, 201
   except Exception:
     abort(400)
@@ -253,6 +280,18 @@ def update_currency():
   c = mongo.db.currencies.replace_one({ "symbol": sym }, request.json)
   return { "matched_count": c.matched_count }
 
+@app.route("/time", methods=['PUT'])
+def update_time():
+  try:
+    errors = time_schema.validate(request.json)
+    name = request.json["find"]
+  except ValidationError:
+    abort(400)
+  except Exception:
+    abort(400)
+  ts = mongo.db.times.replace_one({ "name": name }, request.json)
+  return { "matched_count": ts.matched_count }
+
 @app.route("/time_registration", methods=['PUT'])
 def update_time_registration():
   try:
@@ -338,6 +377,18 @@ def delete_currency():
     abort(400)
   c = mongo.db.currencies.delete_one({ "symbol": sym })
   return { "deleted_count": c.deleted_count }
+
+@app.route("/times", methods=['DELETE'])
+def delete_time():
+  try:
+    errors = time_schema.validate(request.json)
+    name = request.json["name"]
+  except ValidationError:
+    abort(400)
+  except Exception:
+    abort(400)
+  ts = mongo.db.times.delete_one({ "name": name })
+  return { "deleted_count": ts.deleted_count }
 
 @app.route("/time_registration", methods=['DELETE'])
 def delete_time_registration():
@@ -426,6 +477,14 @@ def rates():
     try:
       rates = mongo.db.rates.find()
       return {"rates": rates_schema.dump(rates)}
+    except Exception:
+      abort(400)
+
+@app.route("/times")
+def times():
+    try:
+      times = mongo.db.times.find()
+      return {"times": times_schema.dump(times)}
     except Exception:
       abort(400)
 

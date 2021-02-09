@@ -34,12 +34,16 @@ class RateSchema(Schema):
   #     'collection': ma.URLFor('rates'),
   #   })
 
-class TimeRegistrationSchema(Schema):
-  name = fields.String(required=True, unique=True)
-  start_date = fields.String(required=True, validate=[ Length(min=6, max=10), NoneOf(bad_choices)] )
-  end_date = fields.String(required=True, validate=Length(min=6, max=10))
+class TimeSchema(Schema):
+  name = fields.String(required=True, unique=True, validate=[ NoneOf(bad_choices)] )
   hours = fields.Float(required=True)
   rate = fields.Nested(RateSchema, required=True)
+
+class TimeRegistrationSchema(Schema):
+  name = fields.String(required=True, unique=True, validate=[ NoneOf(bad_choices)] )
+  start_date = fields.String(required=True, validate=Length(min=6, max=10))
+  end_date = fields.String(required=True, validate=Length(min=6, max=10))
+  times = fields.Nested(TimeSchema, required=True, many=True)
 
   class Meta:
     ordered = True
@@ -131,6 +135,8 @@ class InvoiceSchema(Schema):
 # Schemas used by Marshmallow
 currency_schema = CurrencySchema()
 currencies_schema = CurrencySchema(many=True)
+time_schema = TimeSchema()
+times_schema = TimeSchema(many=True)
 rate_schema = RateSchema()
 rates_schema = RateSchema(many=True)
 timereg_schema = TimeRegistrationSchema()
