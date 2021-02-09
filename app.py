@@ -465,6 +465,10 @@ def delete_invoice():
 
 
 # List Views
+@app.route("/")
+def index():
+    return {"message": "Welcome to CRM"}
+
 @app.route("/currencies")
 def currencies():
     try:
