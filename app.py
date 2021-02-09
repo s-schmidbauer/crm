@@ -181,6 +181,33 @@ def add_time_registration():
   except Exception:
     abort(400)
 
+# Expects a Timereg and calculates the total of all times
+@app.route("/get_time_reg_total", methods=['POST'])
+def get_time_reg_total():
+  try:
+    data = request.json
+    name = data["name"]
+    errors = timereg_schema.validate(data)
+    if errors:
+      return {"message": "Validation failed"}, 400
+
+    tr = timereg_schema.dump(data)
+    timeregistrations = mongo.db.timeregistrations
+    result = timeregistrations.find_one({ "name": name })
+
+    if result["times"]:
+      total = 0
+      total_hours = 0
+      for time in result["times"]:
+        hours = time["hours"]
+        price = time["rate"]["price"]
+        total += float(hours) * float(price)
+        total_hours += float(hours)
+      return {"calculated_total": str(total), "hours_total": str(total_hours)}
+    return {"message": "No times found in time registration"}, 400
+  except Exception:
+    abort(400)
+
 @app.route("/rate", methods=['POST'])
 def add_rate():
   try:
