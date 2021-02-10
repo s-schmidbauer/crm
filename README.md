@@ -75,24 +75,24 @@ curl --header "Content-Type: application/json" -X POST -d '{ "symbol": "USD", "u
 
 Add a new rate
 ```
-curl --header "Content-Type: application/json" -X POST -d '{ "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00" }' http://127.0.0.1:5000/rate
+curl --header "Content-Type: application/json" -X POST -d '{ "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00", "token": "secret" }' http://127.0.0.1:5000/rate
 ```
 
 Add time of a certain rate
 ```
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-kw5-150", "hours": "2.0" , "rate": { "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00" } }' http://127.0.0.1:5000/time
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-kw5-150", "hours": "2.0" , "rate": { "currency": { "symbol": "EUR", "usd_conversion_rate": "1.1983" }, "name": "sen-150", "price": "75.00" } }, "token": "secret"' http://127.0.0.1:5000/time
 ```
 
 Add spending and payment method
 ```
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "EC" }' http://127.0.0.1:5000/payment_method
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "EC", "token": "secret" }' http://127.0.0.1:5000/payment_method
 
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "coke", "": "1.00", "payment_method": { "name": "EC" } }' http://127.0.0.1:5000/spending
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "coke", "price": "1.00", "payment_method": { "name": "EC" }, "token": "secret" }' http://127.0.0.1:5000/spending
 ```
 
 Add a list of times to a new time registration
 ```
-curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-2021", "start_date": "01-02-2021", "end_date": "31-02-2021", "times": [ {"name": "sen-kw5-100", "hours": "38.0", "rate": {"name": "sen-100", "price": "28.97", "currency": {"symbol": "EUR", "usd_conversion_rate": "1.1983" } } } ] }' http://127.0.0.1:5000/time_registration
+curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-2021", "start_date": "01-02-2021", "end_date": "31-02-2021", "times": [ {"name": "sen-kw5-100", "hours": "38.0", "rate": {"name": "sen-100", "price": "28.97", "currency": {"symbol": "EUR", "usd_conversion_rate": "1.1983" } } } ], "token": "secret" }' http://127.0.0.1:5000/time_registration
 ```
 
 Get the total of a time registration by posting a time reg to that endpoint.
@@ -131,12 +131,12 @@ curl --header "Content-Type: application/json" -X GET http://127.0.0.1:5000/curr
 ## Update
 Use `find` to query the objects unique identifier
 ```
-curl --header "Content-Type: application/json" -X PUT -d '{ "find": "USD", "symbol": "US Dollar", "usd_conversion_rate": "1.0" }' http://127.0.0.1:5000/currency
+curl --header "Content-Type: application/json" -X PUT -d '{ "find": "USD", "symbol": "US Dollar", "usd_conversion_rate": "1.0" }, "token": "secret"' http://127.0.0.1:5000/currency
 ```
 
 ## Delete
 ```
-curl --header "Content-Type: application/json" -X DELETE -d '{ "name": "Corp" }' "http://127.0.0.1:5000/rate"
+curl --header "Content-Type: application/json" -X DELETE -d '{ "name": "Corp", "token": "secret" }' "http://127.0.0.1:5000/rate"
 {
   "deleted_count": 1
 }
