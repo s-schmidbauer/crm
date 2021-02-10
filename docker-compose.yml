@@ -1,6 +1,6 @@
 ---
 services:
   crm:
-    build: sschmidbauer/crm
+    image: "sschmidbauer/crm:latest"
     ports:
       - "80:5000"
