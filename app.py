@@ -208,7 +208,7 @@ def get_time_reg_total():
         subtotal.append( {"sub_total": float(hours) * float(price), "price":float(price), "symbol": sym, "hours": float(hours) } )
         total += float(hours) * float(price)
         total_hours += float(hours)
-      return {"calculated_total": str(total), "hours_total": str(total_hours), "symbol": sym, "times_count": str(times), "sub_totals": subtotal }
+      return {"total": str(total), "hours_total": str(total_hours), "symbol": sym, "times_count": str(times), "sub_totals": subtotal }
     return {"message": "No times found in time registration"}, 400
   except Exception:
     abort(400)
@@ -289,10 +289,10 @@ def add_invoice():
     if errors:
       return {"message": "Validation failed"}, 400
     ivs = invoice_schema.dump(data)
-    invoices = mongo.db.invices
+    invoices = mongo.db.invoices
     result = invoices.find_one(ivs)
     if not result:
-      spendings.insert_one(ivs)
+      invoices.insert_one(ivs)
       return {"invoice": invoice_schema.dump(data)}
     return {"message": "Nothing changed"}, 201
   except Exception:
