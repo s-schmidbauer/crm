@@ -7,6 +7,11 @@
 
 # Endpoints
 
+Login first for all write operations. They require providing a `token`
+```
+/login
+```
+
 Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entities.
 ```
 /currency
@@ -29,6 +34,12 @@ List (`GET`) entities
 /contacts
 /payment_methods
 /invoices
+```
+
+Special functions
+```
+/usd_conversion_rate
+/get_time_reg_total
 ```
 
 # Test
