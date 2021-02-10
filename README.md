@@ -1,5 +1,12 @@
 # CRM
 
+* RESTful CRM HTTP API
+* Built with Flask, marshmallow and MongoDB
+* Auth required for protected endpoints
+
+
+# Endpoints
+
 Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entities.
 ```
 /currency
@@ -25,6 +32,8 @@ List (`GET`) entities
 ```
 
 # Test
+
+# Login
 
 ## Get
 ```

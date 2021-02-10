@@ -4,3 +4,4 @@ dnspython
 marshmallow
 flask-marshmallow
 requests
+Flask-JWT

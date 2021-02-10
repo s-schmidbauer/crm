@@ -1,15 +1,17 @@
 import sys
 import json
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from pprint import pprint
-from flask import Flask, request, redirect, url_for, jsonify, abort
+from flask import Flask, request, redirect, url_for, jsonify, abort, make_response
 from marshmallow import ValidationError
 from flask_marshmallow import Marshmallow
 from flask_pymongo import PyMongo
+import jwt
+from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'supersecretstuff'
+app.config['SECRET_KEY'] = 'supersecretstuff'
 app.config['MONGO_URI'] = 'mongodb+srv://stefan:supersecret@cluster0.n7jgd.mongodb.net/crm?retryWrites=true&w=majority'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 mongo = PyMongo(app)
@@ -49,6 +51,34 @@ def resource_not_found(e):
 @app.errorhandler(400)
 def bad_request(e):
     return jsonify(error=str(e)), 400
+
+@app.errorhandler(401)
+def unauthorized(e):
+    return jsonify(error=str(e)), 401
+
+def token_required(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    token = request.json["token"]
+    if not token:
+      abort(401)
+    try:
+      data = jwt.decode(token, app.config['SECRET_KEY'])
+    except:
+      abort(401)
+    return f(*args, **kwargs)
+
+  return decorated
+
+# Auth and return a token
+@app.route("/login", methods=['GET'])
+def login():
+  auth = request.authorization
+  exp = datetime.utcnow() + timedelta(hours=2)
+  if auth and auth.password == "secret":
+    token = jwt.encode( { "user": auth.username, "expiration": str(exp) }, app.config['SECRET_KEY'] )
+    return jsonify({ "token": token.decode('UTF-8'), "expiration": str(exp) })
+  return make_response('Auth failed', 401, {"WWW-Authenticate" : "Basic Realm='Login required'"} )
 
 # Detail Views
 @app.route("/currency/<string:symbol>", methods=['GET'])
@@ -119,6 +149,7 @@ def get_invoice(number):
 
 # Returns the usd_conversion_rate of a currency
 @app.route("/usd_conversion_rate", methods=['POST'])
+@token_required
 def usd_conversion_rate():
     try:
       sym = request.json["symbol"]
@@ -131,6 +162,7 @@ def usd_conversion_rate():
 # Add Views
 
 @app.route("/currency", methods=['POST'])
+@token_required
 def add_currency():
   try:
     data = request.json
@@ -148,6 +180,7 @@ def add_currency():
     abort(400)
 
 @app.route("/time", methods=['POST'])
+@token_required
 def add_time():
   try:
     data = request.json
@@ -165,6 +198,7 @@ def add_time():
     abort(400)
 
 @app.route("/time_registration", methods=['POST'])
+@token_required
 def add_time_registration():
   try:
     data = request.json
@@ -183,6 +217,7 @@ def add_time_registration():
 
 # Expects a Timereg and calculates the total of all times
 @app.route("/get_time_reg_total", methods=['POST'])
+@token_required
 def get_time_reg_total():
   try:
     data = request.json
@@ -214,6 +249,7 @@ def get_time_reg_total():
     abort(400)
 
 @app.route("/rate", methods=['POST'])
+@token_required
 def add_rate():
   try:
     data = request.json
@@ -231,6 +267,7 @@ def add_rate():
     abort(400)
 
 @app.route("/payment_method", methods=['POST'])
+@token_required
 def add_payment_method():
   try:
     data = request.json
@@ -248,6 +285,7 @@ def add_payment_method():
     abort(400)
 
 @app.route("/contact", methods=['POST'])
+@token_required
 def add_contact():
   try:
     data = request.json
@@ -265,6 +303,7 @@ def add_contact():
     abort(400)
 
 @app.route("/spending", methods=['POST'])
+@token_required
 def add_spending():
   try:
     data = request.json
@@ -282,6 +321,7 @@ def add_spending():
     abort(400)
 
 @app.route("/invoice", methods=['POST'])
+@token_required
 def add_invoice():
   try:
     data = request.json
@@ -302,6 +342,7 @@ def add_invoice():
 # They validate the json input provided
 # They use find data to identify the object
 @app.route("/currency", methods=['PUT'])
+@token_required
 def update_currency():
   try:
     errors = currency_schema.validate(request.json)
@@ -314,6 +355,7 @@ def update_currency():
   return { "matched_count": c.matched_count }
 
 @app.route("/time", methods=['PUT'])
+@token_required
 def update_time():
   try:
     errors = time_schema.validate(request.json)
@@ -326,6 +368,7 @@ def update_time():
   return { "matched_count": ts.matched_count }
 
 @app.route("/time_registration", methods=['PUT'])
+@token_required
 def update_time_registration():
   try:
     errors = timereg_schema.validate(request.json)
@@ -338,6 +381,7 @@ def update_time_registration():
   return { "matched_count": tr.matched_count }
 
 @app.route("/rate", methods=['PUT'])
+@token_required
 def update_rate():
   try:
     errors = rate_schema.validate(request.json)
@@ -350,6 +394,7 @@ def update_rate():
   return { "matched_count": r.matched_count }
 
 @app.route("/payment_method", methods=['PUT'])
+@token_required
 def update_payment_method():
   try:
     errors = payment_schema.validate(request.json)
@@ -362,6 +407,7 @@ def update_payment_method():
   return { "matched_count": pm.matched_count }
 
 @app.route("/contact", methods=['PUT'])
+@token_required
 def update_contact():
   try:
     errors = payment_schema.validate(request.json)
@@ -374,6 +420,7 @@ def update_contact():
   return { "matched_count": c.matched_count }
 
 @app.route("/spending", methods=['PUT'])
+@token_required
 def update_spending():
   try:
     errors = spending_schema.validate(request.json)
@@ -386,6 +433,7 @@ def update_spending():
   return { "matched_count": s.matched_count }
 
 @app.route("/invoice", methods=['PUT'])
+@token_required
 def update_invoice():
   try:
     errors = invoice_schema.validate(request.json)
@@ -400,6 +448,7 @@ def update_invoice():
 # Delete Views
 # They validate the json input provided
 @app.route("/currency", methods=['DELETE'])
+@token_required
 def delete_currency():
   try:
     errors = currency_schema.validate(request.json)
@@ -412,6 +461,7 @@ def delete_currency():
   return { "deleted_count": c.deleted_count }
 
 @app.route("/times", methods=['DELETE'])
+@token_required
 def delete_time():
   try:
     errors = time_schema.validate(request.json)
@@ -424,6 +474,7 @@ def delete_time():
   return { "deleted_count": ts.deleted_count }
 
 @app.route("/time_registration", methods=['DELETE'])
+@token_required
 def delete_time_registration():
   try:
     errors = timereg_schema.validate(request.json)
@@ -436,6 +487,7 @@ def delete_time_registration():
   return { "deleted_count": tr.deleted_count }
 
 @app.route("/rate", methods=['DELETE'])
+@token_required
 def delete_rate():
   try:
     errors = rate_schema.validate(request.json)
@@ -448,6 +500,7 @@ def delete_rate():
   return { "deleted_count": r.deleted_count }
 
 @app.route("/payment_method", methods=['DELETE'])
+@token_required
 def delete_payment_method():
   try:
     errors = payment_schema.validate(request.json)
@@ -460,6 +513,7 @@ def delete_payment_method():
   return { "deleted_count": pm.deleted_count }
 
 @app.route("/contact", methods=['DELETE'])
+@token_required
 def delete_contact():
   try:
     errors = payment_schema.validate(request.json)
@@ -472,6 +526,7 @@ def delete_contact():
   return { "matched_count": c.matched_count }
 
 @app.route("/spending", methods=['DELETE'])
+@token_required
 def delete_spending():
   try:
     errors = spending_schema.validate(request.json)
@@ -484,6 +539,7 @@ def delete_spending():
   return { "matched_count": s.matched_count }
 
 @app.route("/invoice", methods=['DELETE'])
+@token_required
 def delete_invoice():
   try:
     errors = invoice_schema.validate(request.json)
