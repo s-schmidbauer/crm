@@ -1,5 +1,7 @@
+---
+version: "1.0"
 services:
   crm:
-    build: https://github.com/s-schmidbauer/crm.git
+    build: sschmidbauer/crm
     ports:
       - "80:5000"
