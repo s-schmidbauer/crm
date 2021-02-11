@@ -89,7 +89,7 @@ def get_currency(symbol):
       abort(400)
 
 @app.route("/time/<string:name>", methods=['GET'])
-def get_time(symbol):
+def get_time(name):
     try:
       time = mongo.db.times.find_one_or_404({"name": name })
       return {"time": time_schema.dump(time)}
