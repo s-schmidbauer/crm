@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, ValidationError
+from marshmallow import Schema, fields, ValidationError, EXCLUDE
 from marshmallow.validate import Length, NoneOf
 from flask_marshmallow import Marshmallow
 
@@ -15,6 +15,7 @@ class CurrencySchema(Schema):
 
   class Meta:
     ordered = True
+    unknown = EXCLUDE
 
   # _links = ma.Hyperlinks({
   #     'self': ma.URLFor('get_currency', values=dict(symbol='<symbol>')),
@@ -28,6 +29,7 @@ class RateSchema(Schema):
 
   class Meta:
     ordered = True
+    unknown = EXCLUDE
 
   # _links = ma.Hyperlinks({
   #     'self': ma.URLFor('get_rate', values=dict(name='<name>')),
@@ -47,6 +49,7 @@ class TimeRegistrationSchema(Schema):
 
   class Meta:
     ordered = True
+    unknown = EXCLUDE
 
   # _links = ma.Hyperlinks({
   #     'self': ma.URLFor('get_time_registration', values=dict(_id='<id>')),
@@ -58,6 +61,7 @@ class PaymentMethodSchema(Schema):
 
   class Meta:
     ordered = True
+    unknown = EXCLUDE
 
   # _links = ma.Hyperlinks({
   #     'self': ma.URLFor('get_payment_method', values=dict(name='<name>')),
@@ -72,6 +76,7 @@ class SpendingSchema(Schema):
 
   class Meta:
     ordered = True
+    unknown = EXCLUDE
 
   # _links = ma.Hyperlinks({
   #     'self': ma.URLFor('get_spending', values=dict(name='<name>')),
@@ -104,6 +109,7 @@ class ContactSchema(Schema):
 
   class Meta:
     ordered = True
+    unknown = EXCLUDE
 
   # _links = ma.Hyperlinks({
   #     'self': ma.URLFor('get_contact', values=dict(name='<name>')),
@@ -125,6 +131,7 @@ class InvoiceSchema(Schema):
 
   class Meta:
     ordered = True
+    unknown = EXCLUDE
 
   # _links = ma.Hyperlinks({
   #     'self': ma.URLFor('get_invoice', values=dict(number='<number>')),
