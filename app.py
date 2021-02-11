@@ -61,15 +61,10 @@ def token_required(f):
   def decorated(*args, **kwargs):
     try:
       token = request.json["token"]
+      data = jwt.decode(token, app.config['SECRET_KEY'])
+      return f(*args, **kwargs)
     except Exception:
       abort(400)
-
-    try:
-      data = jwt.decode(token, app.config['SECRET_KEY'])
-    except Exception:
-      abort(401)
-
-    return f(*args, **kwargs)
   return decorated
 
 # Auth and return a token
@@ -77,10 +72,12 @@ def token_required(f):
 def login():
   try:
     auth = request.authorization
-    exp = datetime.utcnow() + timedelta(hours=2)
+    now = datetime.utcnow()
+    in2h = timedelta(hours=2)
+    exp_seconds = in2h.total_seconds()
     if auth and auth.password == "secret":
-      token = jwt.encode( { "user": auth.username, "exp": str(exp) }, app.config['SECRET_KEY'] )
-      return jsonify({ "token": token.decode('UTF-8'), "exp": str(exp) })
+      token = jwt.encode( { "user": auth.username, "nbf": now }, app.config['SECRET_KEY'] )
+      return jsonify({ "token": token.decode('UTF-8') })
   except Exception:
     return make_response('Login failed', 401, {"WWW-Authenticate" : "Basic Realm='Login required'"} )
 
@@ -446,7 +443,7 @@ def update_invoice():
     abort(400)
   except Exception:
     abort(400)
-  i = mongo.db.contacts.replace_one({ "number": number }, request.json)
+  i = mongo.db.invoices.replace_one({ "number": number }, request.json)
   return { "matched_count": i.matched_count }
 
 # Delete Views
@@ -526,8 +523,8 @@ def delete_contact():
     abort(400)
   except Exception:
     abort(400)
-  c = mongo.db.contacts.replace_one({ "name": name })
-  return { "matched_count": c.matched_count }
+  c = mongo.db.contacts.delete_one({ "name": name })
+  return { "deleted_count": c.deleted_count }
 
 @app.route("/spending", methods=['DELETE'])
 @token_required
@@ -539,8 +536,8 @@ def delete_spending():
     abort(400)
   except Exception:
     abort(400)
-  s = mongo.db.contacts.replace_one({ "name": name })
-  return { "matched_count": s.matched_count }
+  s = mongo.db.spendings.delete_one({ "name": name })
+  return { "deleted_count": s.deleted_count }
 
 @app.route("/invoice", methods=['DELETE'])
 @token_required
@@ -551,9 +548,9 @@ def delete_invoice():
   except ValidationError:
     abort(400)
   except Exception:
-    abort(400)
-  i = mongo.db.contacts.replace_one({ "number": number })
-  return { "matched_count": i.matched_count }
+    abort(500)
+  i = mongo.db.invoices.delete_one({ "number": number })
+  return { "deleted_count": i.deleted_count }
 
 
 # List Views

@@ -119,8 +119,8 @@ class ContactSchema(Schema):
 class InvoiceSchema(Schema):
   number = fields.String(required=True, unique=True, validate=[ Length(min=1, max=20), NoneOf(bad_choices)] )
   customer = fields.Nested(ContactSchema, required=True)
-  time_registration = fields.Nested(TimeRegistrationSchema, required=False)
-  spendings = fields.Nested(SpendingSchema, required=False)
+  time_registrations = fields.Nested(TimeRegistrationSchema, required=False, many=True)
+  spendings = fields.Nested(SpendingSchema, required=False, many=True)
   due_date = fields.String(required=False, validate=Length(min=1, max=20))
   sent = fields.Boolean(required=False)
   reminded_first = fields.Boolean(required=False)
