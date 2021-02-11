@@ -76,8 +76,8 @@ def login():
   auth = request.authorization
   exp = datetime.utcnow() + timedelta(hours=2)
   if auth and auth.password == "secret":
-    token = jwt.encode( { "user": auth.username, "expiration": str(exp) }, app.config['SECRET_KEY'] )
-    return jsonify({ "token": token.decode('UTF-8'), "expiration": str(exp) })
+    token = jwt.encode( { "user": auth.username, "exp": str(exp) }, app.config['SECRET_KEY'] )
+    return jsonify({ "token": token.decode('UTF-8'), "exp": str(exp) })
   return make_response('Auth failed', 401, {"WWW-Authenticate" : "Basic Realm='Login required'"} )
 
 # Detail Views
