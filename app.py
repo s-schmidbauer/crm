@@ -59,26 +59,30 @@ def unauthorized(e):
 def token_required(f):
   @wraps(f)
   def decorated(*args, **kwargs):
-    token = request.json["token"]
-    if not token:
-      abort(401)
+    try:
+      token = request.json["token"]
+    except Exception:
+      abort(400)
+
     try:
       data = jwt.decode(token, app.config['SECRET_KEY'])
-    except:
+    except Exception:
       abort(401)
-    return f(*args, **kwargs)
 
+    return f(*args, **kwargs)
   return decorated
 
 # Auth and return a token
 @app.route("/login", methods=['GET'])
 def login():
-  auth = request.authorization
-  exp = datetime.utcnow() + timedelta(hours=2)
-  if auth and auth.password == "secret":
-    token = jwt.encode( { "user": auth.username, "exp": str(exp) }, app.config['SECRET_KEY'] )
-    return jsonify({ "token": token.decode('UTF-8'), "exp": str(exp) })
-  return make_response('Auth failed', 401, {"WWW-Authenticate" : "Basic Realm='Login required'"} )
+  try:
+    auth = request.authorization
+    exp = datetime.utcnow() + timedelta(hours=2)
+    if auth and auth.password == "secret":
+      token = jwt.encode( { "user": auth.username, "exp": str(exp) }, app.config['SECRET_KEY'] )
+      return jsonify({ "token": token.decode('UTF-8'), "exp": str(exp) })
+  except Exception:
+    return make_response('Login failed', 401, {"WWW-Authenticate" : "Basic Realm='Login required'"} )
 
 # Detail Views
 @app.route("/currency/<string:symbol>", methods=['GET'])
