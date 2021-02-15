@@ -174,7 +174,7 @@ def add_currency():
     if not result:
       currencies.insert_one(cs)
       return {"currency": currency_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
@@ -192,7 +192,7 @@ def add_time():
     if not result:
       times.insert_one(ts)
       return {"times": time_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
@@ -210,7 +210,7 @@ def add_time_registration():
     if not result:
       timeregistrations.insert_one(tr)
       return {"time_registration": timereg_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
@@ -261,7 +261,7 @@ def add_rate():
     if not result:
       rates.insert_one(rs)
       return {"rate": rate_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
@@ -279,7 +279,7 @@ def add_payment_method():
     if not result:
       paymentmethods.insert_one(ps)
       return {"payment_method": payment_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
@@ -297,7 +297,7 @@ def add_contact():
     if not result:
       contacts.insert_one(cs)
       return {"contact": contact_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
@@ -315,7 +315,7 @@ def add_spending():
     if not result:
       spendings.insert_one(ss)
       return {"spending": spending_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
@@ -333,7 +333,7 @@ def add_invoice():
     if not result:
       invoices.insert_one(ivs)
       return {"invoice": invoice_schema.dump(data)}
-    return {"message": "Nothing changed"}, 201
+    return {"message": "Nothing changed"}, 304
   except Exception:
     abort(400)
 
