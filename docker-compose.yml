@@ -1,4 +1,5 @@
 ---
+version: "3"
 services:
    crm:
      image: sschmidbauer/crm:latest
