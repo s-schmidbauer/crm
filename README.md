@@ -64,6 +64,12 @@ curl --header "Content-Type: application/json" -X GET "http://127.0.0.1:5000/rat
 }
 ```
 
+## Login
+Login first to add or modify objects. You'll get a token which is valid for 2 hours. Add the `token` to future requests.
+```
+curl --header "Content-Type: application/json" --user stefan:secret -X GET http://127.0.0.1:5000/login
+```
+
 ## Add
 Get the USD conversion rate for a currency
 ```

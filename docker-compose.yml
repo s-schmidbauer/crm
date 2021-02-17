@@ -1,6 +1,6 @@
 ---
 services:
-  crm:
-    image: "sschmidbauer/crm:latest"
-    ports:
-      - "80:5000"
+   crm:
+     image: sschmidbauer/crm:latest
+     ports:
+       - "80:5000"
