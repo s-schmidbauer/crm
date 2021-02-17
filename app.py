@@ -148,15 +148,17 @@ def get_invoice(number):
 # Extra functions
 
 # Renders a pdf template
-@app.route("/pdf_invoice", methods=['GET'])
+@app.route("/pdf_invoice", methods=['POST'])
 @token_required
-def pdf_invoice(number):
+def pdf_invoice():
     # try:
       number = request.json["number"]
+      invoice = mongo.db.invoices.find_one_or_404({"number": number })
       rendered = render_template("invoice.html", invoice=invoice)
       # pdf = pdfkit.from_string(rendered, False)
 
       response = make_response(rendered)
+      # response = make_response(pdf)
       response.headers["Content-Type"] = 'application/pdf'
       response.headers["Content-Disposition"] = 'inline; filename=invoice.pdf'
       return response
