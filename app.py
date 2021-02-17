@@ -247,6 +247,51 @@ def get_time_reg_total():
   except Exception:
     abort(400)
 
+# Expects an Invoice and calculates the total of all times
+@app.route("/get_invoice_total", methods=['POST'])
+@token_required
+def get_invoice_total():
+  try:
+    data = request.json
+    number = data["number"]
+    errors = invoice_schema.validate(data)
+    # if errors:
+    #   return {"message": "Validation failed"}, 400
+
+    iv = invoice_schema.dump(data)
+    invoices = mongo.db.invoices
+    result = invoices.find_one({ "number": number })
+
+    if result["time_registrations"]:
+      total = 0
+      total_hours = 0
+      timereg_count = 0
+      times_count = 0
+      subtotal = []
+      start_date = ""
+      end_date = ""
+
+      for timereg in result["time_registrations"]:
+          times = timereg["times"]
+          start_date = timereg["start_date"]
+          end_date = timereg["end_date"]
+          timereg_count = timereg_count + 1
+
+          for time in times:
+            times_count = times_count + 1
+            hours = time["hours"]
+            price = time["rate"]["price"]
+            sym = time["rate"]["currency"]["symbol"]
+
+            subtotal.append( {"sub_total": float(hours) * float(price), "price":float(price), "symbol": sym, "hours": float(hours) } )
+            total += float(hours) * float(price)
+            total_hours += float(hours)
+
+      return {"start_date": start_date, "end_date": end_date, "times_count": str(total), "hours_total": str(total_hours), "symbol": sym, "times_count": str(times_count), "timereg_count": str(timereg_count), "sub_totals": subtotal, "total": total}
+
+  except Exception:
+    return {"message": "No times found in time registration"}, 400
+
 @app.route("/rate", methods=['POST'])
 @token_required
 def add_rate():
