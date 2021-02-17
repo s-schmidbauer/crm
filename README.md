@@ -39,6 +39,7 @@ List (`GET`) entities
 Special functions
 ```
 /usd_conversion_rate
+/get_invoice_total
 /get_time_reg_total
 ```
 
@@ -93,6 +94,35 @@ curl --header "Content-Type: application/json" -X POST -d '{ "name": "coke", "pr
 Add a list of times to a new time registration
 ```
 curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-2021", "start_date": "01-02-2021", "end_date": "31-02-2021", "times": [ {"name": "sen-kw5-100", "hours": "38.0", "rate": {"name": "sen-100", "price": "28.97", "currency": {"symbol": "EUR", "usd_conversion_rate": "1.1983" } } } ], "token": "secret" }' http://127.0.0.1:5000/time_registration
+```
+
+Get the total of a invoice by posting an invoice to that endpoint.
+```
+curl -s --header "Content-Type: application/json" -X POST -d '{ "token": "secret", "number": "010014" }' http://127.0.0.1:5000/get_invoice_total
+{
+  "end_date": "31-02-2021",
+  "hours_total": "40.0",
+  "start_date": "01-02-2021",
+  "sub_totals": [
+    {
+      "hours": 38.0,
+      "price": 28.97,
+      "sub_total": 1100.86,
+      "symbol": "EUR"
+    },
+    {
+      "hours": 2.0,
+      "price": 43.46,
+      "sub_total": 86.92,
+      "symbol": "EUR"
+    }
+  ],
+  "symbol": "EUR",
+  "timereg_count": "1",
+  "times_count": "2",
+  "total": 1187.78
+}
+
 ```
 
 Get the total of a time registration by posting a time reg to that endpoint.
