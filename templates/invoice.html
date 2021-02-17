@@ -1,0 +1,20 @@
+<html>
+
+To:
+{{ invoice.customer.name }}
+{{ invoice.customer.address }}
+{{ invoice.customer.zip }} {{ invoice.customer.city }}, {{ invoice.customer.country }}
+
+By:
+Stefan Schmidbauer
+Dvořákova 637
+47301 Nový Bor, CZ
+
+Subject: Invoice: {{ invoice.number }}
+Invoice date: {{ invoice.due_date }}
+
+Dear Sir or Madam:
+
+Please find following items to be paid for my services
+
+</html>
