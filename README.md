@@ -13,6 +13,7 @@ Login first for all write operations. They require providing a `token`
 ```
 
 Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entities.
+Use the entities' unique identifier like `name` or `number` (invoice) or `symbol` (currency)
 ```
 /currency
 /time
@@ -41,6 +42,7 @@ Special functions
 /usd_conversion_rate
 /get_invoice_total
 /get_time_reg_total
+/html_invoice
 ```
 
 # Test

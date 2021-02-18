@@ -5,4 +5,3 @@ marshmallow
 flask-marshmallow
 requests
 Flask-JWT
-pdfkit

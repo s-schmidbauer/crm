@@ -9,7 +9,7 @@ from flask_marshmallow import Marshmallow
 from flask_pymongo import PyMongo
 import jwt
 from functools import wraps
-import pdfkit
+# import pdfkit
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretstuff'
