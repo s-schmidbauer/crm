@@ -147,21 +147,21 @@ def get_invoice(number):
 
 # Extra functions
 
-# Renders a pdf template
-@app.route("/pdf_invoice", methods=['POST'])
-@token_required
-def pdf_invoice():
-    # try:
-      number = request.json["number"]
-      invoice = mongo.db.invoices.find_one_or_404({"number": number })
-      rendered = render_template("invoice.html", invoice=invoice)
-      # pdf = pdfkit.from_string(rendered, False)
+# Renders a PDF template
+# @app.route("/pdf_invoice", methods=['POST'])
+# @token_required
+# def pdf_invoice():
+#   try:
+#     number = request.json["number"]
+#     invoice = mongo.db.invoices.find_one_or_404({"number": number })
+#     rendered = render_template("invoice.html", invoice=invoice)
+#     pdf = pdfkit.from_string(rendered, "invoice.pdf")
 
-      response = make_response(rendered)
-      # response = make_response(pdf)
-      response.headers["Content-Type"] = 'application/pdf'
-      response.headers["Content-Disposition"] = 'inline; filename=invoice.pdf'
-      return response
+#     # fails here with a 400. Missing binary to WkHTMLtoPDF
+#     # response = make_response(pdf)
+#     # response.headers["Content-Type"] = 'application/pdf'
+#     # response.headers["Content-Disposition"] = 'inline; filename=invoice.pdf'
+#     return response
 
     # Using Flask-WkHTMLtoPDF
     # invoice = mongo.db.invoices.find_one_or_404({"number": number })
@@ -169,6 +169,17 @@ def pdf_invoice():
 
     # except Exception:
     #   abort(400)
+
+# Renders a html template
+@app.route("/html_invoice", methods=['POST'])
+@token_required
+def html_invoice():
+  try:
+    number = request.json["number"]
+    invoice = mongo.db.invoices.find_one_or_404({"number": number })
+    return render_template("invoice.html", invoice=invoice)
+  except Exception:
+    abort(400)
 
 # Returns the usd_conversion_rate of a currency
 @app.route("/usd_conversion_rate", methods=['POST'])
