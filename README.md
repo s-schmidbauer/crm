@@ -13,6 +13,7 @@ Login first for all write operations. They require providing a `token`
 ```
 
 Get (`GET`), update (`PUT`), create (`POST`) and delete (`DELETE`) single entities.
+Use the entities' unique identifier like `name` or `number` (invoice) or `symbol` (currency)
 ```
 /currency
 /time
@@ -41,6 +42,7 @@ Special functions
 /usd_conversion_rate
 /get_invoice_total
 /get_time_reg_total
+/html_invoice
 ```
 
 # Test
@@ -156,6 +158,12 @@ curl --header "Content-Type: application/json" -X POST -d '{ "name": "sen-feb-20
 }
 
 ```
+
+Get a HTML invoice using the default invoice template
+```
+curl --header "Content-Type: application/json" -X POST -d '{ "token": "secret", "number": "010014" }' http://127.0.0.1:5000/html_invoice > invoice-010014.html
+```
+
 
 Add spedings and time registrations to invoices
 

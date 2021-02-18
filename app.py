@@ -3,12 +3,13 @@ import json
 import requests
 from datetime import datetime, timedelta
 from pprint import pprint
-from flask import Flask, request, redirect, url_for, jsonify, abort, make_response
+from flask import Flask, request, redirect, url_for, jsonify, abort, make_response, render_template
 from marshmallow import ValidationError
 from flask_marshmallow import Marshmallow
 from flask_pymongo import PyMongo
 import jwt
 from functools import wraps
+# import pdfkit
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretstuff'
@@ -145,6 +146,40 @@ def get_invoice(number):
       abort(400)
 
 # Extra functions
+
+# Renders a PDF template
+# @app.route("/pdf_invoice", methods=['POST'])
+# @token_required
+# def pdf_invoice():
+#   try:
+#     number = request.json["number"]
+#     invoice = mongo.db.invoices.find_one_or_404({"number": number })
+#     rendered = render_template("invoice.html", invoice=invoice)
+#     pdf = pdfkit.from_string(rendered, "invoice.pdf")
+
+#     # fails here with a 400. Missing binary to WkHTMLtoPDF
+#     # response = make_response(pdf)
+#     # response.headers["Content-Type"] = 'application/pdf'
+#     # response.headers["Content-Disposition"] = 'inline; filename=invoice.pdf'
+#     return response
+
+    # Using Flask-WkHTMLtoPDF
+    # invoice = mongo.db.invoices.find_one_or_404({"number": number })
+    # return render_template_to_pdf('invoice.html', download=True, save=False, invoice=invoice)
+
+    # except Exception:
+    #   abort(400)
+
+# Renders a html template
+@app.route("/html_invoice", methods=['POST'])
+@token_required
+def html_invoice():
+  try:
+    number = request.json["number"]
+    invoice = mongo.db.invoices.find_one_or_404({"number": number })
+    return render_template("invoice.html", invoice=invoice)
+  except Exception:
+    abort(400)
 
 # Returns the usd_conversion_rate of a currency
 @app.route("/usd_conversion_rate", methods=['POST'])
