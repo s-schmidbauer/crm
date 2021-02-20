@@ -64,6 +64,10 @@ def token_required(f):
       token = request.json["token"]
       data = jwt.decode(token, app.config['SECRET_KEY'])
       return f(*args, **kwargs)
+    except jwt.ExpiredSignatureError:
+      return 'Signature expired. Please log in again.'
+    except jwt.InvalidTokenError:
+      return 'Invalid token. Please log in again.'
     except Exception:
       abort(400)
   return decorated
@@ -163,23 +167,17 @@ def get_invoice(number):
 #     # response.headers["Content-Disposition"] = 'inline; filename=invoice.pdf'
 #     return response
 
-    # Using Flask-WkHTMLtoPDF
-    # invoice = mongo.db.invoices.find_one_or_404({"number": number })
-    # return render_template_to_pdf('invoice.html', download=True, save=False, invoice=invoice)
-
-    # except Exception:
-    #   abort(400)
-
 # Renders a html template
 @app.route("/html_invoice", methods=['POST'])
 @token_required
 def html_invoice():
-  try:
+  # try:
     number = request.json["number"]
     invoice = mongo.db.invoices.find_one_or_404({"number": number })
-    return render_template("invoice.html", invoice=invoice)
-  except Exception:
-    abort(400)
+    issuer = mongo.db.contacts.find_one_or_404({"name": "Stefan Schmidbauer" })
+    return render_template("invoice.html", invoice=invoice, issuer=issuer)
+  # except Exception:
+  #   abort(400)
 
 # Returns the usd_conversion_rate of a currency
 @app.route("/usd_conversion_rate", methods=['POST'])
