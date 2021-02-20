@@ -1,19 +1,5 @@
 <html>
 
-<<<<<<< Updated upstream
-<b>To:</b>
-{{ invoice.customer.name }}
-{{ invoice.customer.address }}
-{{ invoice.customer.zip }} {{ invoice.customer.city }}, {{ invoice.customer.country }}
-
-<b>By:</b>
-Stefan Schmidbauer
-Dvořákova 637
-47301 Nový Bor, CZ
-
-<b>Subject:</b> Invoice: {{ invoice.number }}
-<b>Invoice date:</b> {{ invoice.due_date }}
-=======
 To:</br>
 {{ invoice.customer.name }}</br>
 {{ invoice.customer.address }}</br>
@@ -26,7 +12,6 @@ By:</br>
 
 Subject: <b>Invoice: {{ invoice.number }}</b>
 Invoice date: {{ invoice.due_date }}</br>
->>>>>>> Stashed changes
 
 </br>
 Dear Sir or Madam:
@@ -51,34 +36,6 @@ Please find following items to be paid for my services.
 <td>{{ tr.times["sen-kw5-150"].subtotal }}</td>
 <td>{{ tr.total }}</td>
 
-<<<<<<< Updated upstream
-<table>
-  <th>Time total hours (h)</th>
-  <th>100% rate (h) 150% rate (h)</th>
-  <th>100% billable (Eur)</th>
-  <th>150% billable (Eur)</th>
-  <th>total billable (Eur)</th>
-  <td>40</td>
-  <td>40</td>
-  <td>0</td>
-  <td>1200</td>
-  <td>0</td>
-  <td>1200</td>
-</table>
-
-<b>
-total (Eur)
-1200
-</b>
-
-Please pay within x business days with reference to your invoice number.
-
-Bank details:
-IBAN: xxx
-BIC: xxx
-Account holder: xxx
-
-=======
 {% endfor %}
 </table>
 
@@ -99,6 +56,5 @@ For questions or remarks please contact me at {{ issuer.email_contact }} or by p
 
 Kind regards</br>
 
-Stefan Schmidbauer</br>
->>>>>>> Stashed changes
+{{ issuer.name }}</br>
 </html>
