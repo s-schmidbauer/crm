@@ -105,6 +105,7 @@ class ContactSchema(Schema):
   email_contact = fields.Email(required=False, validate=Length(min=10, max=50))
   email_invoice = fields.Email(required=False, validate=Length(min=10, max=50))
   bank_iban = fields.String(required=False, validate=Length(min=20, max=30))
+  bank_bic = fields.String(required=False, validate=Length(min=5, max=10))
   payment_days = fields.Integer(required=False, validate=Length(min=1, max=2))
 
   class Meta:

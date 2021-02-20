@@ -64,6 +64,10 @@ def token_required(f):
       token = request.json["token"]
       data = jwt.decode(token, app.config['SECRET_KEY'])
       return f(*args, **kwargs)
+    except jwt.ExpiredSignatureError:
+      return 'Signature expired. Please log in again.'
+    except jwt.InvalidTokenError:
+      return 'Invalid token. Please log in again.'
     except Exception:
       abort(400)
   return decorated
@@ -147,6 +151,7 @@ def get_invoice(number):
 
 # Extra functions
 
+<<<<<<< Updated upstream
 # Renders a PDF template
 # @app.route("/pdf_invoice", methods=['POST'])
 # @token_required
@@ -162,6 +167,25 @@ def get_invoice(number):
 #     # response.headers["Content-Type"] = 'application/pdf'
 #     # response.headers["Content-Disposition"] = 'inline; filename=invoice.pdf'
 #     return response
+=======
+# Renders a pdf template
+@app.route("/pdf_invoice", methods=['POST'])
+@token_required
+def pdf_invoice():
+    # try:
+      number = request.json["number"]
+      invoice = mongo.db.invoices.find_one_or_404({"number": number })
+      issuer = mongo.db.contacts.find_one_or_404({"name": "Stefan Schmidbauer" })
+
+      rendered = render_template("invoice.html", invoice=invoice, issuer=issuer)
+      # pdf = pdfkit.from_string(rendered, False)
+
+      response = make_response(rendered)
+      # response = make_response(pdf)
+      response.headers["Content-Type"] = 'application/pdf'
+      response.headers["Content-Disposition"] = 'inline; filename=invoice.pdf'
+      return response
+>>>>>>> Stashed changes
 
     # Using Flask-WkHTMLtoPDF
     # invoice = mongo.db.invoices.find_one_or_404({"number": number })

@@ -1,5 +1,6 @@
 <html>
 
+<<<<<<< Updated upstream
 <b>To:</b>
 {{ invoice.customer.name }}
 {{ invoice.customer.address }}
@@ -12,11 +13,45 @@ Dvořákova 637
 
 <b>Subject:</b> Invoice: {{ invoice.number }}
 <b>Invoice date:</b> {{ invoice.due_date }}
+=======
+To:</br>
+{{ invoice.customer.name }}</br>
+{{ invoice.customer.address }}</br>
+{{ invoice.customer.zip }} {{ invoice.customer.city }}, {{ invoice.customer.country }}</br>
 
+By:</br>
+{{ issuer.name }}</br>
+{{ issuer.stret }}</br>
+{{ issuer.zip }} {{ issuer.city }}, {{ issuer.country }}</br>
+
+Subject: <b>Invoice: {{ invoice.number }}</b>
+Invoice date: {{ invoice.due_date }}</br>
+>>>>>>> Stashed changes
+
+</br>
 Dear Sir or Madam:
+</br>
+Please find following items to be paid for my services.
+</br>
+<table>
+<th>Time</th>
+<th>total hours (h)</th>
+<th>100% rate (h)</th>
+<th>150% rate (h)</th>
+<th>100% billable (Eur)</th>
+<th>150% billable (Eur)</th>
+<th>total billable (Eur)</th>
 
-Please find following items to be paid for my services
+{% for tr in invoice.time_registrations %}
+<td>{{ tr.start_date }} - {{ tr.end_date }}</td>
+<td>{{ tr.total_hours }}</td>
+<td>{{ tr.times["sen-kw5-100"].hours }}</td>
+<td>{{ tr.times["sen-kw5-150"].hours }}</td>
+<td>{{ tr.times["sen-kw5-100"].subtotal }}</td>
+<td>{{ tr.times["sen-kw5-150"].subtotal }}</td>
+<td>{{ tr.total }}</td>
 
+<<<<<<< Updated upstream
 <table>
   <th>Time total hours (h)</th>
   <th>100% rate (h) 150% rate (h)</th>
@@ -43,4 +78,27 @@ IBAN: xxx
 BIC: xxx
 Account holder: xxx
 
+=======
+{% endfor %}
+</table>
+
+total (Eur)
+{{ invoice.total }}
+
+<div>
+Please pay latest {{ invoice.due_date }} with reference to your invoice number.
+
+Bank details:
+IBAN: {{ issuer.bank_iban }} BIC: {{ issuer.bank_bic }}
+Account holder: {{ issuer.name }}
+</div>
+
+<div>
+For questions or remarks please contact me at {{ issuer.email_contact }} or by phone: {{ issuer.phone_mobile }}
+</div>
+
+Kind regards</br>
+
+Stefan Schmidbauer</br>
+>>>>>>> Stashed changes
 </html>
